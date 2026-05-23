@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResConnect | RL Workspace</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- I repeated the small SVG sprite on this page so every page works even when opened directly. -->
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="M3 10.8 12 3l9 7.8v9.4a.8.8 0 0 1-.8.8h-5.4v-6.2H9.2V21H3.8a.8.8 0 0 1-.8-.8v-9.4Z"></path>
+    </symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24">
+      <path d="M8 4h8l1 2h3v15H4V6h3l1-2Z"></path>
+      <path d="M8 10h8M8 14h8M8 18h5"></path>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <path d="M5 5h14v16H5V5Z"></path>
+      <path d="M8 3v4M16 3v4M5 10h14"></path>
+    </symbol>
+    <symbol id="icon-feed" viewBox="0 0 24 24">
+      <path d="M5 5h14v4H5V5ZM5 12h14v7H5v-7Z"></path>
+      <path d="M8 15h5"></path>
+    </symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24">
+      <path d="M12 3 20 6v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6l8-3Z"></path>
+      <path d="m8.8 12.2 2.1 2.1 4.5-4.7"></path>
+    </symbol>
+    <symbol id="icon-alert" viewBox="0 0 24 24">
+      <path d="M12 3 22 21H2L12 3Z"></path>
+      <path d="M12 9v5M12 17.6v.1"></path>
+    </symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24">
+      <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM2.8 20a6.2 6.2 0 0 1 12.4 0"></path>
+      <path d="M17 11.4a3.2 3.2 0 1 0 0-6.4M16.2 14.2A5.2 5.2 0 0 1 21.5 20"></path>
+    </symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24">
+      <path d="M5 12h13"></path>
+      <path d="m13 6 6 6-6 6"></path>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M20 6 9 17l-5-5"></path>
+    </symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M18 9a6 6 0 1 0-12 0c0 7-2 7-2 9h16c0-2-2-2-2-9Z"></path>
+      <path d="M10 21h4"></path>
+    </symbol>
+  </svg>
+
+  <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+  <header class="app-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">RC</span>
+      <span class="brand-copy">
+        <strong>ResConnect</strong>
+        <small>Capricornia College</small>
+      </span>
+    </a>
+
+    <label for="menu-toggle" class="hamburger" aria-label="Open navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html">
+        <svg><use href="#icon-home"></use></svg>
+        Dashboard
+      </a>
+      <a href="duty-report.html">
+        <svg><use href="#icon-clipboard"></use></svg>
+        Duty Report
+      </a>
+      <a href="events.html">
+        <svg><use href="#icon-calendar"></use></svg>
+        Event Kanban
+      </a>
+      <a href="feed.html">
+        <svg><use href="#icon-feed"></use></svg>
+        Resident Feed
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="#rl-alerts" class="icon-button" aria-label="View RL alerts">
+        <svg><use href="#icon-bell"></use></svg>
+      </a>
+      <a href="index.html#account-panel" class="profile-chip">
+        <span>RW</span>
+        <strong>Reece</strong>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="workspace-hero">
+      <div>
+        <p class="eyebrow">RL workspace</p>
+        <h1>Tonight’s duty shift is active.</h1>
+        <p>
+          Reece Williams can continue duty rounds, review pending issues, hand over context to Karraar Atra,
+          and keep event tasks moving without jumping between separate apps.
+        </p>
+      </div>
+
+      <div class="shift-card">
+        <div class="panel-topline">
+          <span class="status-dot"></span>
+          <strong>Live shift</strong>
+        </div>
+        <h2>Friday 7:00 PM – 11:00 PM</h2>
+        <p>First point: Reece Williams</p>
+        <p>Second point: Karraar Atra</p>
+        <a href="duty-report.html" class="button button-primary full-width">
+          Continue duty report
+          <svg><use href="#icon-arrow"></use></svg>
+        </a>
+      </div>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="workspace-card wide-card">
+        <div class="section-title-row compact">
+          <div>
+            <p class="eyebrow">Operational queue</p>
+            <h2>What needs attention first</h2>
+          </div>
+          <a href="duty-report.html" class="quiet-link">Open report</a>
+        </div>
+
+        <div class="priority-grid">
+          <a href="duty-report.html" class="priority-card urgent">
+            <svg><use href="#icon-alert"></use></svg>
+            <span>Duty rounds</span>
+            <strong>7 locations still need checks</strong>
+            <small>Byerley, Jardine, Hopkins, Swanson 1–6 and outdoor areas</small>
+          </a>
+
+          <a href="issue-report.html" class="priority-card">
+            <svg><use href="#icon-clipboard"></use></svg>
+            <span>Resident issue</span>
+            <strong>Leaking shower reported</strong>
+            <small>House 4 bathroom · duplicate check available</small>
+          </a>
+
+          <a href="events.html" class="priority-card warning">
+            <svg><use href="#icon-calendar"></use></svg>
+            <span>Event operations</span>
+            <strong>Volleyball Social needs risk review</strong>
+            <small>Move from Risk Review to Approved after sign-off</small>
+          </a>
+        </div>
+      </article>
+
+      <article class="workspace-card">
+        <p class="eyebrow">Quick actions</p>
+        <div class="quick-action-list">
+          <a href="duty-report.html">
+            <svg><use href="#icon-clipboard"></use></svg>
+            New duty report
+          </a>
+          <a href="events.html">
+            <svg><use href="#icon-calendar"></use></svg>
+            Manage event Kanban
+          </a>
+          <a href="feed.html">
+            <svg><use href="#icon-feed"></use></svg>
+            Check resident feed
+          </a>
+        </div>
+      </article>
+
+      <article class="workspace-card">
+        <p class="eyebrow">Handover readiness</p>
+        <div class="readiness-meter">
+          <span style="width: 72%;"></span>
+        </div>
+        <h2>72% complete</h2>
+        <p class="muted">
+          The next RL will receive a cleaner handover once open issues, skipped locations and event notes are reviewed.
+        </p>
+      </article>
+
+      <article class="workspace-card wide-card">
+        <div class="section-title-row compact">
+          <div>
+            <p class="eyebrow">Duty locations</p>
+            <h2>Round structure based on real Capricornia checks</h2>
+          </div>
+          <span class="pill">CSS-only accordions</span>
+        </div>
+
+        <div class="accordion-grid">
+          <details open>
+            <summary>Core communal areas</summary>
+            <div class="check-preview-list">
+              <span>Dining Hall</span>
+              <span>Junior Common Room</span>
+              <span>Senior Common Room</span>
+              <span>Movie Mill</span>
+              <span>Games Garage</span>
+            </div>
+          </details>
+
+          <details>
+            <summary>Residential houses</summary>
+            <div class="check-preview-list">
+              <span>Byerley</span>
+              <span>Hopkins</span>
+              <span>Jardine</span>
+              <span>Gutey</span>
+              <span>McCall</span>
+              <span>Hutton</span>
+              <span>Ballard</span>
+              <span>Swanson 1–6</span>
+            </div>
+          </details>
+
+          <details>
+            <summary>Study and outdoor spaces</summary>
+            <div class="check-preview-list">
+              <span>Cramton</span>
+              <span>Zen Room</span>
+              <span>Collabcity</span>
+              <span>Volleyball Court</span>
+              <span>Pathway Lights</span>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="workspace-card timeline-card">
+        <p class="eyebrow">Live activity</p>
+
+        <div class="timeline-list">
+          <a href="duty-report.html">
+            <span class="timeline-pin complete"></span>
+            <span>
+              <strong>JCR fire panel marked working and silent</strong>
+              <small>Reece Williams · 9:14 PM</small>
+            </span>
+          </a>
+
+          <a href="duty-report.html">
+            <span class="timeline-pin warning"></span>
+            <span>
+              <strong>Byerley cardboard bin note added</strong>
+              <small>Needs review before sending</small>
+            </span>
+          </a>
+
+          <a href="events.html">
+            <span class="timeline-pin"></span>
+            <span>
+              <strong>Movie Mill Night reached 18 RSVPs</strong>
+              <small>Resident feed engagement</small>
+            </span>
+          </a>
+
+          <a href="feed.html">
+            <span class="timeline-pin"></span>
+            <span>
+              <strong>Kunihiro viewed event feed</strong>
+              <small>Resident layer activity</small>
+            </span>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section class="notification-drawer" id="rl-alerts">
+      <div class="drawer-card">
+        <div class="section-title-row compact">
+          <div>
+            <p class="eyebrow">RL alerts</p>
+            <h2>Items waiting for action</h2>
+          </div>
+          <a href="#" class="close-link">Close</a>
+        </div>
+
+        <div class="activity-list">
+          <a href="duty-report.html">
+            <span class="activity-icon warning">
+              <svg><use href="#icon-alert"></use></svg>
+            </span>
+            <span>
+              <strong>Duty report has unsent draft changes</strong>
+              <small>Submit & Send to RLTcaplist + ResLife</small>
+            </span>
+          </a>
+
+          <a href="events.html">
+            <span class="activity-icon warning">
+              <svg><use href="#icon-calendar"></use></svg>
+            </span>
+            <span>
+              <strong>Risk review status needs updating</strong>
+              <small>Volleyball Social · due tomorrow</small>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>ResConnect prototype · RL workspace · HTML5 and CSS3 only</p>
+  </footer>
+</body>
+</html>
