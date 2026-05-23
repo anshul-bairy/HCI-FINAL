@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResConnect | Offline Draft Saved</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+  <header class="app-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">RC</span>
+      <span class="brand-copy"><strong>ResConnect</strong><small>Capricornia College</small></span>
+    </a>
+
+    <label for="menu-toggle" class="hamburger" aria-label="Open navigation menu">
+      <span></span><span></span><span></span>
+    </label>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html">Dashboard</a>
+      <a href="duty-report.html" class="active">Duty Report</a>
+      <a href="events.html">Event Kanban</a>
+      <a href="feed.html">Resident Feed</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="rl-workspace.html" class="profile-chip"><span>RW</span><strong>Reece</strong></a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="confirm-panel warning-panel">
+      <div class="success-mark warning-mark">!</div>
+      <p class="eyebrow">Alternative path</p>
+      <h1>Report saved offline.</h1>
+      <p>
+        The send failed, so ResConnect saved the report as a local draft. This represents the edge case from the HTA:
+        if delivery fails, the report is saved and retried rather than lost.
+      </p>
+
+      <div class="confirm-grid">
+        <div class="status-strip">
+          <span>Current state</span>
+          <strong>Offline draft</strong>
+        </div>
+
+        <div class="status-strip">
+          <span>Retry behaviour</span>
+          <strong>Auto-retry when connected</strong>
+        </div>
+
+        <div class="status-strip">
+          <span>Visible to next RL?</span>
+          <strong>Pending sync</strong>
+        </div>
+
+        <div class="status-strip">
+          <span>User action needed</span>
+          <strong>None right now</strong>
+        </div>
+      </div>
+
+      <div class="button-row centre-row">
+        <a href="duty-report.html" class="button button-secondary dark-text">Return to draft</a>
+        <a href="duty-success.html" class="button button-primary">Simulate retry success</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>ResConnect prototype · Offline edge case</p>
+  </footer>
+</body>
+</html>

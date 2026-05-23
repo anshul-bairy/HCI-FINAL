@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResConnect | Review Duty Report</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+  <header class="app-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">RC</span>
+      <span class="brand-copy"><strong>ResConnect</strong><small>Capricornia College</small></span>
+    </a>
+
+    <label for="menu-toggle" class="hamburger" aria-label="Open navigation menu">
+      <span></span><span></span><span></span>
+    </label>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html">Dashboard</a>
+      <a href="duty-report.html" class="active">Duty Report</a>
+      <a href="events.html">Event Kanban</a>
+      <a href="feed.html">Resident Feed</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="rl-workspace.html" class="profile-chip"><span>RW</span><strong>Reece</strong></a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="form-hero">
+      <div>
+        <p class="eyebrow">Review screen</p>
+        <h1>Check before sending.</h1>
+        <p>
+          This page gives Reece a final confirmation point before the report is sent to RLTcaplist + ResLife.
+        </p>
+      </div>
+
+      <aside class="shift-card">
+        <div class="panel-topline">
+          <span class="status-dot"></span>
+          <strong>Ready to send</strong>
+        </div>
+        <h2>3 flagged notes</h2>
+        <p>1 maintenance flag</p>
+        <p>2 handover notes</p>
+      </aside>
+    </section>
+
+    <section class="review-grid">
+      <article class="form-card">
+        <p class="eyebrow">Recipients</p>
+        <h2>Submit & Send to RLTcaplist + ResLife</h2>
+
+        <div class="status-strip">
+          <span>RLTcaplist</span>
+          <strong>Included</strong>
+        </div>
+
+        <div class="status-strip">
+          <span>ResLife</span>
+          <strong>Included</strong>
+        </div>
+
+        <div class="status-strip">
+          <span>Next RL handover</span>
+          <strong>Karraar Atra</strong>
+        </div>
+      </article>
+
+      <article class="form-card">
+        <p class="eyebrow">Maintenance flag</p>
+        <h2>Hutton House</h2>
+        <p class="muted">
+          Cardboard bin lid broken and overflowing. This note will appear in the handover log and the maintenance summary.
+        </p>
+
+        <div class="inline-alert">
+          <strong>Why this matters:</strong>
+          The review card prevents buried maintenance notes from disappearing inside a long report.
+        </div>
+      </article>
+
+      <article class="form-card">
+        <p class="eyebrow">Handover summary</p>
+        <h2>What the next RL needs to know</h2>
+
+        <div class="location-list">
+          <div class="location-row">
+            <strong>Movie Mill</strong>
+            <span>Niharika Petiti left keys behind. RLs called and notified her.</span>
+            <small>Resolved tonight</small>
+          </div>
+
+          <div class="location-row warning">
+            <strong>Swanson 6</strong>
+            <span>Laundry marked fair. Clothes left behind.</span>
+            <small>Check again tomorrow</small>
+          </div>
+
+          <div class="location-row">
+            <strong>Dining Hall and JCR</strong>
+            <span>Cleanliness good. External doors locked. Fire panel silent.</span>
+            <small>No escalation</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="form-card send-card">
+        <p class="eyebrow">Final action</p>
+        <h2>Send the report</h2>
+        <p class="muted">
+          In the real system this would send through email/API. In this prototype, the confirmation page represents the completed send state.
+        </p>
+
+        <div class="button-row">
+          <a href="duty-report.html" class="button button-secondary dark-text">Go back and edit</a>
+          <a href="duty-offline.html" class="button button-secondary dark-text">Simulate send failure</a>
+          <a href="duty-success.html" class="button button-primary">Submit & Send to RLTcaplist + ResLife</a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>ResConnect prototype · Duty review screen</p>
+  </footer>
+</body>
+</html>
