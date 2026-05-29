@@ -41,8 +41,338 @@
           <a href="rl-workspace.html"><span>RW</span> <strong>Reece (RL Workspace)</strong></a>
           <a href="feed.html"><span>KS</span> <strong>Kuni (Resident Feed)</strong></a>
         </div>
-              <p class="eyebrow">Step 6</p>
-              <h2>Final notes before review</h2>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="form-hero">
+      <div>
+        <p class="eyebrow">Welcome back, Reece</p>
+        <h1>Friday duty rounds report</h1>
+        <p>
+          Complete your duty rounds report. You can review your progress, save it offline, and submit it to the team when you are done.
+        </p>
+      </div>
+
+      <aside class="shift-card">
+        <div class="panel-topline">
+          <span class="status-dot"></span>
+          <strong>Draft in progress</strong>
+        </div>
+        <h2>15 Sep 2025, 9:36 PM</h2>
+        <p>First point: Reece Williams</p>
+        <p>Second point: Karraar Atra</p>
+      </aside>
+    </section>
+
+    <section class="duty-layout-grid">
+      <aside class="progress-rail">
+        <p class="eyebrow">Progress</p>
+        <a href="#shift-details" class="progress-step complete">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          1. Shift details
+        </a>
+        <a href="#student-welfare" class="progress-step complete">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          2. Welfare notes
+        </a>
+        <a href="#communal-areas" class="progress-step active">
+          3. Communal areas
+        </a>
+        <a href="#houses" class="progress-step">
+          4. Houses
+        </a>
+        <a href="#study-recreation" class="progress-step">
+          5. Study and recreation
+        </a>
+        <a href="#final-notes" class="progress-step">
+          6. Review notes
+        </a>
+      </aside>
+
+      <form action="duty-review.html" class="work-panel">
+        <section id="shift-details" class="form-card">
+          <div class="section-title-row compact">
+            <div class="title-with-icon">
+              <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              <div>
+                <p class="eyebrow">Step 1</p>
+                <h2>Shift details</h2>
+              </div>
+            </div>
+            <span class="pill">Required</span>
+          </div>
+
+          <div class="form-section-grid">
+            <label>
+              First point duty
+              <input type="text" value="Reece Williams" required>
+            </label>
+
+            <label>
+              Second point duty
+              <input type="text" value="Karraar Atra" required>
+            </label>
+
+            <label>
+              AHC on call
+              <input type="text" value="Inoke" required>
+            </label>
+
+            <label>
+              Shift type
+              <select required>
+                <option>Night duty rounds</option>
+                <option>Weekend duty rounds</option>
+                <option>Public holiday duty rounds</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section id="student-welfare" class="form-card">
+          <div class="section-title-row compact">
+            <div class="title-with-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <div>
+                <p class="eyebrow">Step 2</p>
+                <h2>Student welfare</h2>
+              </div>
+            </div>
+            <span class="pill">Private</span>
+          </div>
+
+          <label>
+            Update on students on welfare check list
+            <textarea>Checked in with one resident after dinner. No escalation required tonight.</textarea>
+          </label>
+
+          <div class="segmented-options">
+            <label class="option-card">
+              <input type="radio" name="welfare-risk" checked>
+              <span>No immediate welfare risk</span>
+            </label>
+
+            <label class="option-card">
+              <input type="radio" name="welfare-risk">
+              <span>Follow-up needed tomorrow</span>
+            </label>
+
+            <label class="option-card danger-option">
+              <input type="radio" name="welfare-risk">
+              <span>Escalate to ResLife</span>
+            </label>
+          </div>
+        </section>
+
+        <section id="communal-areas" class="form-card">
+          <div class="section-title-row compact">
+            <div class="title-with-icon">
+              <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              <div>
+                <p class="eyebrow">Step 3</p>
+                <h2>Communal area checks</h2>
+              </div>
+            </div>
+            <span class="pill">Based on duty phone flow</span>
+          </div>
+
+          <details open>
+            <summary>Dining Hall</summary>
+            <div class="check-grid">
+              <label class="check-card"><input type="checkbox" checked> Tables clean</label>
+              <label class="check-card"><input type="checkbox" checked> Fridges clean</label>
+              <label class="check-card"><input type="checkbox" checked> Projector off</label>
+              <label class="check-card"><input type="checkbox" checked> Appliances off</label>
+              <label class="check-card"><input type="checkbox" checked> Digital signage working</label>
+              <label class="check-card"><input type="checkbox" checked> External doors locked</label>
+            </div>
+
+            <div class="form-section-grid">
+              <label>
+                Number of people
+                <input type="number" value="2" min="0">
+              </label>
+
+              <label>
+                Maintenance required?
+                <select>
+                  <option>No</option>
+                  <option>Yes</option>
+                </select>
+              </label>
+            </div>
+          </details>
+
+          <details>
+            <summary>Junior Common Room and Senior Common Room</summary>
+            <div class="check-grid">
+              <label class="check-card"><input type="checkbox" checked> JCR clean</label>
+              <label class="check-card"><input type="checkbox" checked> Bathrooms clean</label>
+              <label class="check-card"><input type="checkbox" checked> Pool cues okay</label>
+              <label class="check-card"><input type="checkbox" checked> Fire panel silent</label>
+              <label class="check-card"><input type="checkbox" checked> Lights and AirCon off</label>
+              <label class="check-card"><input type="checkbox" checked> SCR and stage doors locked</label>
+            </div>
+          </details>
+        </section>
+
+        <section id="houses" class="form-card">
+          <div class="section-title-row compact">
+            <div class="title-with-icon">
+              <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              <div>
+                <p class="eyebrow">Step 4</p>
+                <h2>Residential houses</h2>
+              </div>
+            </div>
+            <a href="#maintenance-note" class="quiet-link">Jump to issue</a>
+          </div>
+
+          <div class="location-list">
+            <label class="location-row good">
+              <input type="checkbox" checked class="visually-hidden">
+              <div class="location-info">
+                <strong>Byerley</strong>
+                <span>Kitchenettes and hallways good</span>
+                <small>Cardboard bin full</small>
+              </div>
+              <svg class="status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </label>
+
+            <label class="location-row good">
+              <input type="checkbox" checked class="visually-hidden">
+              <div class="location-info">
+                <strong>Hopkins</strong>
+                <span>External doors locked</span>
+                <small>No major issue recorded</small>
+              </div>
+              <svg class="status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </label>
+
+            <label class="location-row good">
+              <input type="checkbox" checked class="visually-hidden">
+              <div class="location-info">
+                <strong>Jardine</strong>
+                <span>Fire panel silent</span>
+                <small>Jardine/Hopkins laundry socks left behind</small>
+              </div>
+              <svg class="status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </label>
+
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info">
+                <strong>Gutey</strong>
+                <span>Kitchen, common room and hallways good</span>
+                <small>Drying yard and bike storage gate locked</small>
+              </div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info">
+                <strong>McCall</strong>
+                <span>Kitchen and hallway clean</span>
+                <small>All 3 external doors locked</small>
+              </div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+
+            <label class="location-row warning">
+              <input type="checkbox" checked class="visually-hidden">
+              <div class="location-info">
+                <strong>Hutton</strong>
+                <span>Cardboard bin lid broken and overflowing</span>
+                <small>Review before sending</small>
+              </div>
+              <svg class="status-icon alert-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </label>
+
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info">
+                <strong>Ballard</strong>
+                <span>Bathrooms, laundry and fridges good</span>
+                <small>All 7 external doors locked</small>
+              </div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+
+            <label class="location-row warning">
+              <input type="checkbox" checked class="visually-hidden">
+              <div class="location-info">
+                <strong>Swanson 1 to 6</strong>
+                <span>Swanson 6 laundry fair</span>
+                <small>Clothes left in laundry room</small>
+              </div>
+              <svg class="status-icon alert-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </label>
+          </div>
+
+          <div id="maintenance-note" class="inline-alert has-icon">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <div>
+              <strong>Maintenance flag:</strong>
+              Hutton cardboard bin lid appears broken. This will be highlighted on the review page.
+            </div>
+          </div>
+        </section>
+
+        <section id="study-recreation" class="form-card">
+          <div class="section-title-row compact">
+            <div class="title-with-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <div>
+                <p class="eyebrow">Step 5</p>
+                <h2>Study, recreation and outdoor spaces</h2>
+              </div>
+            </div>
+            <span class="pill">Optional photo evidence</span>
+          </div>
+
+          <div class="form-section-grid">
+            <label>
+              Movie Mill notes
+              <textarea>Nichole Pinero left her macbook in the Movie Mill. RLs called and notified her.</textarea>
+            </label>
+
+            <label>
+              Games Garage notes
+              <textarea>Lights and AirCon turned off. No residents present.</textarea>
+            </label>
+
+            <label>
+              Study rooms
+              <textarea>Cramton had 3 students. Middle Study Room and Collabcity were empty and locked.</textarea>
+            </label>
+
+            <label>
+              Outdoor checks
+              <textarea>Pathway lights working. No vehicle damage observed in car parks.</textarea>
+            </label>
+          </div>
+
+          <label class="upload-box interactive-dropzone">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <div class="dropzone-text">
+              <strong>Upload photo evidence</strong>
+              <span>Click or drag and drop to attach files</span>
+            </div>
+            <input type="file" class="visually-hidden">
+          </label>
+        </section>
+
+        <section id="final-notes" class="form-card">
+          <div class="section-title-row compact">
+            <div class="title-with-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <div>
+                <p class="eyebrow">Step 6</p>
+                <h2>Final notes before review</h2>
+              </div>
             </div>
             <span class="pill">Almost done</span>
           </div>

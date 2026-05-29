@@ -1286,32 +1286,64 @@ textarea:focus {
 }
 
 .location-row {
+  position: relative;
   display: grid;
-  grid-template-columns: 150px 1fr auto;
+  grid-template-columns: 1fr auto;
   gap: 12px;
   align-items: center;
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--paper);
+  cursor: pointer;
+  transition: all 160ms ease;
 }
 
-.location-row strong {
+.location-row:hover,
+.location-row:focus-within {
+  border-color: var(--lime);
+  box-shadow: 0 4px 12px rgba(30, 64, 65, 0.08);
+}
+
+.location-info {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.location-info strong {
   color: var(--deep-green);
 }
 
-.location-row span,
-.location-row small {
+.location-info span,
+.location-info small {
   color: var(--muted);
 }
 
-.location-row.good {
+.location-row:has(input:checked) {
+  border-color: var(--lime);
   background: var(--lime-soft);
 }
 
-.location-row.warning {
+.location-row.warning:has(input:checked) {
+  border-color: rgba(165, 106, 22, 0.4);
   background: var(--warning-soft);
-  border-color: rgba(165, 106, 22, 0.22);
+}
+
+.status-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--muted);
+  transition: color 160ms ease;
+}
+
+.location-row:has(input:checked) .status-icon {
+  color: var(--deep-green);
+}
+
+.location-row.warning:has(input:checked) .status-icon {
+  color: var(--warning);
 }
 
 .inline-alert {
@@ -1446,7 +1478,8 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
-  .location-row {
+  .location-row,
+  .location-info {
     grid-template-columns: 1fr;
   }
 }
@@ -1545,4 +1578,94 @@ textarea:focus {
   color: var(--lime);
   font-size: 0.8rem;
   font-weight: 900;
+}
+
+/* ---------- DUTY REPORT INTERACTIVE STYLES ---------- */
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-with-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--lime);
+  background: var(--deep-green);
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 160ms ease;
+}
+
+.progress-step svg {
+  width: 18px;
+  height: 18px;
+  display: none;
+}
+
+.progress-step.complete svg {
+  display: block;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.interactive-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px;
+  cursor: pointer;
+  border-color: var(--line);
+  background: var(--cream);
+  transition: all 160ms ease;
+}
+
+.interactive-dropzone:hover,
+.interactive-dropzone:focus-within {
+  background: var(--lime-soft);
+  border-color: var(--deep-green);
+}
+
+.interactive-dropzone svg {
+  width: 32px;
+  height: 32px;
+  color: var(--deep-green);
+}
+
+.dropzone-text strong {
+  display: block;
+  color: var(--deep-green);
+  font-size: 1.1rem;
+}
+
+.has-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.has-icon svg {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
