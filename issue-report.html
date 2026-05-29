@@ -5,6 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ResConnect | Report Issue</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* I added these specific styles here because they're only used on the issue report form */
+    .duplicate-warning {
+      display: none;
+      background: var(--warning-soft);
+      border: 1px solid var(--warning);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin-top: -6px; /* Pull it slightly up to the radio card */
+    }
+    
+    /* CSS Hack for duplicate issue detection without JS! I used the adjacent sibling combinator ~ */
+    #loc-house4:checked ~ .duplicate-warning {
+      display: block;
+    }
+
+    .form-hero {
+      margin-bottom: 24px;
+    }
+
+    .issue-form-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group > label {
+      display: block;
+      font-weight: 800;
+      color: var(--deep-green);
+      margin-bottom: 8px;
+    }
+
+    .radio-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    .radio-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      background: var(--cream);
+      transition: all 0.2s ease;
+    }
+
+    .radio-card:hover {
+      border-color: var(--lime);
+    }
+
+    .radio-card input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--deep-green);
+    }
+    
+    select, textarea, input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--cream);
+      font-family: inherit;
+    }
+
+    select:focus, textarea:focus, input[type="text"]:focus {
+      outline: 2px solid var(--lime);
+      border-color: var(--deep-green);
+    }
+  </style>
 </head>
 
 <body>
@@ -26,21 +108,108 @@
       <a href="events.html">Event Kanban</a>
       <a href="feed.html" class="active">Resident Feed</a>
     </nav>
+
+    <div class="header-actions">
+      <!-- Our new CSS-only Switch User dropdown! -->
+      <div class="user-switch-container">
+        <div tabindex="0" class="profile-chip">
+          <span>👥</span>
+          <strong>Switch User</strong>
+        </div>
+        <div class="user-dropdown">
+          <a href="index.html"><span>AB</span> <strong>Anshul (Dashboard)</strong></a>
+          <a href="rl-workspace.html"><span>RW</span> <strong>Reece (RL Workspace)</strong></a>
+          <a href="feed.html"><span>KS</span> <strong>Kuni (Resident Feed)</strong></a>
+        </div>
+      </div>
+    </div>
   </header>
 
   <main class="page-shell">
-    <section class="stub-page">
-      <p class="eyebrow">Resident issue flow</p>
-      <h1>Issue report placeholder.</h1>
-      <p>
-        This link now works. Batch 4 will upgrade it into the anonymous/named reporting flow with duplicate issue detection.
-      </p>
-
-      <div class="button-row centre-row">
-        <a href="feed.html" class="button button-secondary dark-text">Back to feed</a>
-        <a href="rl-workspace.html" class="button button-primary">Preview RL queue</a>
+    <div class="issue-form-card">
+      <div class="form-hero">
+        <p class="eyebrow">Resident Issue Flow</p>
+        <h1 style="font-size: 2.2rem; color: var(--deep-green); margin: 8px 0;">Report an Issue</h1>
+        <p class="muted">
+          Your report will be sent securely to the RL on duty.
+        </p>
       </div>
-    </section>
+
+      <form action="feed.html">
+        <!-- Anonymous vs Named Reporting -->
+        <div class="form-group">
+          <label>Reporting As</label>
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" name="reporting_as" value="named" checked>
+              <div>
+                <strong style="color: var(--deep-green);">Kunihiro Sato (House 4)</strong>
+                <small style="display: block; color: var(--muted);">RLs can follow up with you directly.</small>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="reporting_as" value="anonymous">
+              <div>
+                <strong style="color: var(--deep-green);">Anonymous Resident</strong>
+                <small style="display: block; color: var(--muted);">Your identity is hidden. Best for noise complaints.</small>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select required>
+            <option value="">Select a category...</option>
+            <option value="maintenance">Maintenance & Repairs</option>
+            <option value="noise">Noise Complaint</option>
+            <option value="welfare">Welfare Check Request</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- CSS Duplicate Issue Hack -->
+        <div class="form-group">
+          <label>Location</label>
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" name="location" value="house3">
+              <strong style="color: var(--deep-green);">House 3</strong>
+            </label>
+            
+            <label class="radio-card">
+              <input type="radio" name="location" id="loc-house4" value="house4">
+              <strong style="color: var(--deep-green);">House 4 (My House)</strong>
+            </label>
+            
+            <!-- This warning only appears when House 4 is selected using the ~ CSS selector -->
+            <div class="duplicate-warning">
+              <strong style="color: var(--warning); display: block; margin-bottom: 4px;">⚠️ 1 known issue already reported here</strong>
+              <span style="color: var(--warning);">Is it the leaking shower head?</span>
+              <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <a href="feed.html" class="button button-primary" style="background: var(--warning); color: #fff; min-height: 36px; font-size: 0.9rem;">Yes, upvote issue</a>
+                <span class="button button-secondary" style="border-color: var(--warning); color: var(--warning); min-height: 36px; font-size: 0.9rem;">No, continue report</span>
+              </div>
+            </div>
+
+            <label class="radio-card">
+              <input type="radio" name="location" value="dining">
+              <strong style="color: var(--deep-green);">Dining Hall</strong>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea rows="4" placeholder="Please describe the issue..." required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 32px;">
+          <a href="feed.html" class="button button-secondary" style="color: var(--deep-green); border-color: var(--line); flex: 1;">Cancel</a>
+          <button type="submit" class="button button-primary" style="flex: 2;">Submit Report</button>
+        </div>
+      </form>
+    </div>
   </main>
 </body>
 </html>

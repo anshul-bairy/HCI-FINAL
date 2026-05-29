@@ -5,10 +5,657 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ResConnect | Event Kanban</title>
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Inline styles specifically to handle the colorful, high-fidelity CQU Green Kanban theme -->
+  <style>
+    /* Premium CQU brand palette variables */
+    :root {
+      --cqu-darkest:  #0B2122;   /* deepest midnight green */
+      --cqu-deep:     #163334;   /* forest dark green */
+      --cqu-mid:      #1E4041;   /* primary brand green */
+      --cqu-teal:     #2A5557;   /* vibrant dark teal */
+      --cqu-mint:     #EAF1F2;   /* soft mint background tint */
+      --cqu-mint-dark:#CADCDE;   /* medium mint borders */
+      --cqu-lime:     #C7DC5D;   /* bright lime brand accent */
+      --cqu-lime-soft:#F1F7D3;   /* pastel lime tint */
+      
+      /* Card-specific status colors */
+      --color-draft:  var(--cqu-teal);
+      --color-review: #A56A16;   /* warm gold warning */
+      --color-reject: #B95050;   /* deep coral danger */
+      --color-good:   #2E6A4F;   /* emerald success */
+      
+      --color-draft-soft:  var(--cqu-mint);
+      --color-review-soft: #FFF5E6;
+      --color-reject-soft: #FDF2F2;
+      --color-good-soft:   #F0F7F4;
+    }
+
+    /* Style the main board wrapper */
+    .kanban-board-container {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 10px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .kanban-board {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .kanban-board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Beautiful frosted columns utilizing CQU mist backgrounds (Idea 6 inspired) */
+    .kanban-column {
+      background: rgba(234, 241, 242, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--cqu-mint-dark);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 6px 20px rgba(15, 40, 41, 0.04);
+    }
+
+    /* Glowing column headers (Idea 1) */
+    .kanban-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* Color variations for column headers using deep brand colors */
+    .column-draft    .kanban-header-bar { background: var(--cqu-deep); }
+    .column-review   .kanban-header-bar { background: var(--cqu-teal); }
+    .column-revision .kanban-header-bar { background: var(--color-reject); }
+    .column-publish  .kanban-header-bar { background: var(--cqu-darkest); }
+
+    .header-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Pulsing status lights in header (Idea 1) */
+    .status-light {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cqu-lime);
+      display: inline-block;
+      box-shadow: 0 0 8px var(--cqu-lime);
+    }
+    
+    .column-revision .status-light {
+      background: #FFA3A3;
+      box-shadow: 0 0 8px #FFA3A3;
+    }
+
+    .kanban-header-bar .count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+
+    /* Hide the select toggle checkbox (Idea 7) */
+    .card-select-toggle {
+      display: none;
+    }
+
+    /* Premium interactive cards (Idea 3 & Idea 7) */
+    .kanban-card-wrapper {
+      display: block;
+      cursor: pointer;
+    }
+
+    .kanban-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(15, 40, 41, 0.05);
+      transition: transform 0.22s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                  box-shadow 0.22s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                  border-color 0.22s;
+    }
+
+    /* Side Accent Stripe on Hover (Idea 3) */
+    .kanban-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      transition: width 0.22s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    /* Card accent stripe colors */
+    .column-draft    .kanban-card::before { background: var(--color-draft); }
+    .column-review   .kanban-card::before { background: var(--color-review); }
+    .column-revision .kanban-card::before { background: var(--color-reject); }
+    .column-publish  .kanban-card::before { background: var(--color-good); }
+
+    /* Hover animations */
+    .kanban-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 30px rgba(15, 40, 41, 0.12);
+      border-color: var(--cqu-mint-dark);
+    }
+
+    .kanban-card:hover::before {
+      width: 8px; /* Accent stripe expands on hover */
+    }
+
+    /* Selected state via hidden checkbox (Idea 7) */
+    .card-select-toggle:checked + .kanban-card {
+      border: 2px solid var(--cqu-lime);
+      background: var(--cqu-lime-soft);
+      box-shadow: 0 8px 24px rgba(199, 220, 93, 0.3);
+    }
+
+    /* Card typography */
+    .kanban-card h4 {
+      margin: 0 0 6px 0;
+      font-size: 1.05rem;
+      color: var(--cqu-darkest);
+      font-weight: 700;
+    }
+
+    .kanban-card p {
+      margin: 0 0 14px 0;
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* Metadata inline tags with SVGs (Idea 2) */
+    .card-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .meta-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Metadata icons */
+    .meta-tag svg {
+      width: 11px;
+      height: 11px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Inline Risk Rating Badges (Idea 4) */
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: bold;
+    }
+
+    .risk-badge svg {
+      width: 11px;
+      height: 11px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    /* Risk variations */
+    .risk-low {
+      background: var(--color-good-soft);
+      color: var(--color-good);
+    }
+    .risk-medium {
+      background: var(--color-review-soft);
+      color: var(--color-review);
+    }
+    .risk-high {
+      background: var(--color-reject-soft);
+      color: var(--color-reject);
+    }
+
+    /* Category colors */
+    .tag-budget {
+      background: #E8F0F5;
+      color: #2F6F88;
+    }
+    .tag-sports {
+      background: #EFE8FA;
+      color: #723CB5;
+    }
+    .tag-social {
+      background: #FDF0F6;
+      color: #B53C7C;
+    }
+
+    /* Card Bottom Row showing avatar assignment */
+    .card-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.8rem;
+    }
+
+    .card-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .author-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cqu-teal);
+    }
+
+    /* Ready to Publish Check Badge (Idea 9) */
+    .publish-check-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--color-good-soft);
+      color: var(--color-good);
+      border: 1px solid rgba(46, 106, 79, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 3px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .publish-check-badge svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 3;
+    }
+
+    /* Interactive CSS Collapse Feedback Box (Idea 5) */
+    .feedback-collapse-input {
+      display: none;
+    }
+
+    .feedback-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--color-reject-soft);
+      color: var(--color-reject);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      border: 1px solid rgba(185, 80, 80, 0.2);
+      transition: background 0.18s;
+    }
+
+    .feedback-header-bar:hover {
+      background: #FADCDC;
+    }
+
+    .feedback-header-bar svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      transition: transform 0.2s;
+    }
+
+    /* Expand panels via checkbox hack */
+    .feedback-content-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease-out;
+      background: #FFF9F9;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    }
+
+    .feedback-inner-text {
+      padding: 12px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #8C3A3A;
+      border-left: 3px solid var(--color-reject);
+      border-right: 1px solid rgba(185, 80, 80, 0.15);
+      border-bottom: 1px solid rgba(185, 80, 80, 0.15);
+    }
+
+    .feedback-collapse-input:checked + .feedback-header-bar svg {
+      transform: rotate(180deg);
+    }
+
+    .feedback-collapse-input:checked ~ .feedback-content-panel {
+      max-height: 250px;
+    }
+
+    /* Dashed Upload Drop Interaction Area (Idea 10) */
+    .dashed-upload-zone {
+      display: block;
+      margin-top: 14px;
+      border: 2px dashed rgba(185, 80, 80, 0.35);
+      background: #FFFDFD;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .dashed-upload-zone:hover {
+      border-color: var(--color-reject);
+      background: var(--color-reject-soft);
+    }
+
+    .upload-zone-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-reject);
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    .upload-zone-text svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    .upload-zone-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .dashed-upload-zone input[type="file"] {
+      display: none; /* Hide default selector */
+    }
+
+    /* 
+      ========================================================================
+      PURE CSS MODAL + INTERACTIVE KANBAN ROUTING FLOW STYLING
+      ========================================================================
+    */
+    
+    /* Toggle checkboxes to drive the UI flow states */
+    .modal-toggle { display: none; }
+    .new-card-state-toggle { display: none; }
+
+    /* Floating Action Button (FAB) at top-right of page hero */
+    .add-event-fab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: var(--cqu-lime);
+      color: var(--cqu-darkest);
+      font-weight: 900;
+      font-size: 0.88rem;
+      border-radius: 999px;
+      border: 2px solid var(--cqu-deep);
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 4px 14px rgba(199, 220, 93, 0.35);
+    }
+
+    .add-event-fab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(199, 220, 93, 0.5);
+    }
+
+    .add-event-fab svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 3;
+    }
+
+    /* Modal dialog layout wrapper */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(11, 33, 34, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--paper);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--cqu-mint-dark);
+      max-width: 580px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(11, 33, 34, 0.4);
+      overflow: hidden;
+      animation: modalSlide 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      background: var(--cqu-darkest);
+      color: #fff;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .modal-close-btn {
+      cursor: pointer;
+      color: var(--cqu-lime);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--cqu-deep);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--cqu-mint-dark);
+      background: var(--cqu-mint);
+      color: var(--cqu-darkest);
+      font-size: 0.9rem;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      outline: 2px solid var(--cqu-lime);
+      background: #fff;
+    }
+
+    .modal-footer {
+      background: var(--cqu-mint);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid var(--cqu-mint-dark);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 0;
+      text-decoration: none;
+      transition: background 0.18s;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      border: 1px solid var(--cqu-mint-dark);
+      color: var(--cqu-teal);
+    }
+
+    .btn-secondary:hover {
+      background: var(--cqu-mint-dark);
+    }
+
+    .btn-primary {
+      background: var(--cqu-mid);
+      color: var(--cqu-lime);
+    }
+
+    .btn-primary:hover {
+      background: var(--cqu-darkest);
+    }
+
+    /* 
+      DYNAMIC DRAFT vs RISK REVIEW BOARD ROUTING STATE
+      Depending on which action buttons the user clicks in the modal:
+      - Clicking "Save Draft" checks NO checkboxes (default state).
+      - Clicking "Cancel" closes the modal overlay.
+      - Clicking "Submit for Risk Review" checks the state toggles, which hiding/showing cards.
+    */
+    .new-card-draft { display: none; }
+    .new-card-review { display: none; }
+
+    /* When DRAFT state checkbox is checked, show card in Draft column */
+    body:has(#state-draft:checked) .new-card-draft {
+      display: block;
+    }
+    
+    /* Increments column count dynamically */
+    body:has(#state-draft:checked) .column-draft .count::after {
+      content: " → 2";
+      color: var(--cqu-lime);
+      font-weight: 900;
+    }
+
+    /* When REVIEW state checkbox is checked, show card in Risk Review column */
+    body:has(#state-review:checked) .new-card-review {
+      display: block;
+    }
+
+    body:has(#state-review:checked) .column-review .count::after {
+      content: " → 2";
+      color: var(--cqu-lime);
+      font-weight: 900;
+    }
+
+    /* CSS Modal open rule */
+    body:has(#toggle-add-modal:checked) .modal-overlay {
+      display: grid;
+    }
+
+  </style>
 </head>
 
 <body>
   <input type="checkbox" id="menu-toggle" class="menu-toggle">
+  
+  <!-- 
+    DYNAMIC FLOW DRIVERS 
+    These checkboxes sit at the top of body to maintain the state of uploader modal
+    and determine which column the newly built event lands inside.
+  -->
+  <input type="checkbox" id="toggle-add-modal" class="modal-toggle">
+  <input type="checkbox" id="state-draft" class="new-card-state-toggle">
+  <input type="checkbox" id="state-review" class="new-card-state-toggle">
 
   <header class="app-header">
     <a href="index.html" class="brand">
@@ -28,21 +675,370 @@
     </nav>
 
     <div class="header-actions">
-      <a href="rl-workspace.html" class="profile-chip"><span>RW</span><strong>Reece</strong></a>
+      <div class="user-switch-container">
+        <div tabindex="0" class="profile-chip">
+          <span>??</span>
+          <strong>Switch User</strong>
+        </div>
+        <div class="user-dropdown">
+          <a href="index.html"><span>AB</span> <strong>Anshul (Dashboard)</strong></a>
+          <a href="rl-workspace.html"><span>RW</span> <strong>Reece (RL Workspace)</strong></a>
+          <a href="feed.html"><span>KS</span> <strong>Kuni (Resident Feed)</strong></a>
+        </div>
+      </div>
     </div>
   </header>
 
   <main class="page-shell">
-    <section class="stub-page">
-      <p class="eyebrow">Batch 3 page ready</p>
-      <h1>Event Kanban placeholder.</h1>
-      <p>This page prevents broken links now. Next batch will replace it with the full Kanban workflow.</p>
-
-      <div class="button-row centre-row">
-        <a href="rl-workspace.html" class="button button-secondary dark-text">Back to RL workspace</a>
-        <a href="feed.html" class="button button-primary">View resident feed placeholder</a>
+    <section class="form-hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <p class="eyebrow">Scenario 2</p>
+        <h1>Event Kanban</h1>
+        <p>Managing event risk assessments and approvals.</p>
+      </div>
+      <div>
+        <!-- FAB triggering the modal overlay purely through CSS -->
+        <label for="toggle-add-modal" class="add-event-fab">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Propose New Event
+        </label>
       </div>
     </section>
+
+    <!-- Modal dialog uploader form -->
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Propose New College Event</h3>
+          <label for="toggle-add-modal" class="modal-close-btn">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </label>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Event Name</label>
+            <input type="text" id="event-input-name" placeholder="e.g. Trivia Championship" required>
+          </div>
+          <div class="form-group">
+            <label>Risk Level Classification</label>
+            <select id="event-input-risk">
+              <option value="low">Low Risk - Standard On-Campus Lounge Activity</option>
+              <option value="medium">Medium Risk - Outdoor Sports or Dining Social</option>
+              <option value="high">High Risk - Large Scale or Off-Campus Social</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Event Category Group</label>
+            <select id="event-input-category">
+              <option value="social">Social and Networking Gathering</option>
+              <option value="sports">Active Outdoor and Sports Game</option>
+              <option value="budget">Academic and Study Session</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Event Description</label>
+            <textarea id="event-input-desc" placeholder="Brief outline of event logistics, maximum capacity parameters, and equipment details." rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- Clicking Cancel simply untoggles the modal display checkbox -->
+          <label for="toggle-add-modal" class="btn btn-secondary">Cancel</label>
+          
+          <!-- Save Draft triggers state-draft checked state + closes modal -->
+          <label for="state-draft" class="btn btn-secondary" onclick="document.getElementById('toggle-add-modal').checked=false; document.getElementById('state-review').checked=false;">
+            Save Draft
+          </label>
+          
+          <!-- Submit for Review triggers state-review checked state + closes modal -->
+          <label for="state-review" class="btn btn-primary" onclick="document.getElementById('toggle-add-modal').checked=false; document.getElementById('state-draft').checked=false;">
+            Submit for Risk Review
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-board-container">
+      <div class="kanban-board">
+        
+        <!-- ==================== COLUMN 1: DRAFT ==================== -->
+        <div class="kanban-column column-draft">
+          <div class="kanban-header-bar">
+            <div class="header-title-group">
+              <span class="status-light"></span>
+              <span>Draft</span>
+            </div>
+            <span class="count">1</span>
+          </div>
+
+          <!-- 
+            DYNAMIC DRAFT CARD (ROUTED CSS STATE)
+            Hidden by default, lights up dynamically if Save Draft is pressed.
+          -->
+          <div class="new-card-draft">
+            <label class="kanban-card-wrapper" for="select-card-new-draft">
+              <input type="checkbox" id="select-card-new-draft" class="card-select-toggle">
+              <div class="kanban-card" style="border: 2px solid var(--cqu-teal); background: #FAFDFE;">
+                <div class="card-meta-row">
+                  <span class="meta-tag tag-social">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    New Draft Event
+                  </span>
+                </div>
+                <h4>Trivia Championship</h4>
+                <p>Social gathering for college teams with custom trivia quizzes and prizes.</p>
+                <div class="card-meta-row">
+                  <span class="risk-badge risk-low">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Low Risk
+                  </span>
+                </div>
+                <div class="card-footer-row">
+                  <div class="card-author">
+                    <span class="author-dot"></span>
+                    <span>Proposed by Reece</span>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Interactive Selectable Card 1 (Idea 7) -->
+          <label class="kanban-card-wrapper" for="select-card-games">
+            <input type="checkbox" id="select-card-games" class="card-select-toggle">
+            
+            <div class="kanban-card">
+              <!-- Meta Tags (Idea 2) -->
+              <div class="card-meta-row">
+                <span class="meta-tag tag-budget">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  Budget Info Required
+                </span>
+              </div>
+              
+              <h4>Games Night</h4>
+              <p>Social board games evening planned for the main floor common room.</p>
+              
+              <!-- Risk Rating Badge (Idea 4) -->
+              <div class="card-meta-row">
+                <span class="risk-badge risk-low">
+                  <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Low Risk
+                </span>
+              </div>
+
+              <!-- Footer assignment info -->
+              <div class="card-footer-row">
+                <div class="card-author">
+                  <span class="author-dot"></span>
+                  <span>Proposed by Reece</span>
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <!-- ==================== COLUMN 2: RISK REVIEW ==================== -->
+        <div class="kanban-column column-review">
+          <div class="kanban-header-bar">
+            <div class="header-title-group">
+              <span class="status-light" style="background:#E29623;box-shadow:0 0 8px #E29623;"></span>
+              <span>Risk Review</span>
+            </div>
+            <span class="count">1</span>
+          </div>
+
+          <!-- 
+            DYNAMIC RISK REVIEW CARD (ROUTED CSS STATE)
+            Hidden by default, lights up dynamically if Submit is pressed.
+          -->
+          <div class="new-card-review">
+            <label class="kanban-card-wrapper" for="select-card-new-review">
+              <input type="checkbox" id="select-card-new-review" class="card-select-toggle">
+              <div class="kanban-card" style="border: 2px solid var(--color-review); background: #FFFDF9;">
+                <div class="card-meta-row">
+                  <span class="meta-tag tag-social">
+                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Awaiting Review
+                  </span>
+                </div>
+                <h4>Trivia Championship</h4>
+                <p>Social gathering for college teams with custom trivia quizzes and prizes.</p>
+                <div class="card-meta-row">
+                  <span class="risk-badge risk-low">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Low Risk
+                  </span>
+                </div>
+                <div class="card-footer-row">
+                  <div class="card-author">
+                    <span class="author-dot" style="background: var(--color-review);"></span>
+                    <span>Proposal Active</span>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Interactive Selectable Card 2 (Idea 7) -->
+          <label class="kanban-card-wrapper" for="select-card-volleyball">
+            <input type="checkbox" id="select-card-volleyball" class="card-select-toggle">
+            
+            <div class="kanban-card">
+              <div class="card-meta-row">
+                <span class="meta-tag tag-sports">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 1 1 8 0 4 4 0 1 1-8 0"/></svg>
+                  Outdoor Activity
+                </span>
+              </div>
+              
+              <h4>Volleyball Social</h4>
+              <p>Inter-college sports afternoon at the campus volleyball sand court.</p>
+
+              <div class="card-meta-row">
+                <span class="risk-badge risk-medium">
+                  <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  Medium Risk
+                </span>
+              </div>
+
+              <div class="card-footer-row">
+                <div class="card-author">
+                  <span class="author-dot" style="background:var(--color-review);"></span>
+                  <span>Reviewer: AHC team</span>
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <!-- ==================== COLUMN 3: REVISION REQUIRED ==================== -->
+        <div class="kanban-column column-revision">
+          <div class="kanban-header-bar">
+            <div class="header-title-group">
+              <span class="status-light"></span>
+              <span>Revision Required</span>
+            </div>
+            <span class="count">1</span>
+          </div>
+
+          <!-- Interactive Selectable Card 3 (Idea 7) -->
+          <label class="kanban-card-wrapper" for="select-card-movie">
+            <input type="checkbox" id="select-card-movie" class="card-select-toggle">
+            
+            <div class="kanban-card">
+              <div class="card-meta-row">
+                <span class="meta-tag tag-social">
+                  <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Large Social
+                </span>
+              </div>
+
+              <h4>Movie Mill Night</h4>
+              <p>Off-campus bus transport and movie theater booking.</p>
+
+              <div class="card-meta-row">
+                <span class="risk-badge risk-high">
+                  <svg viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  High Risk
+                </span>
+              </div>
+
+              <!-- Interactive CSS Collapse Feedback Box (Idea 5) -->
+              <input type="checkbox" id="toggle-feedback-panel" class="feedback-collapse-input">
+              <label class="feedback-header-bar" for="toggle-feedback-panel">
+                <span>View Supervisor Feedback</span>
+                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+              </label>
+              <div class="feedback-content-panel">
+                <div class="feedback-inner-text">
+                  You need to explicitly outline the maximum capacity for this transport event. Please attach a revised risk assessment document.
+                </div>
+              </div>
+
+              <!-- Dashed Upload Zone (Idea 10) -->
+              <label class="dashed-upload-zone">
+                <span class="upload-zone-text">
+                  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Upload revised risk assessment
+                  <span class="upload-zone-sub">Click to select PDF format</span>
+                </span>
+                <input type="file" required>
+              </label>
+
+              <div class="card-footer-row">
+                <div class="card-author">
+                  <span class="author-dot" style="background:var(--color-reject);"></span>
+                  <span>Rejected by RLC supervisor</span>
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <!-- ==================== COLUMN 4: PUBLISHED ==================== -->
+        <div class="kanban-column column-publish">
+          <div class="kanban-header-bar">
+            <div class="header-title-group">
+              <span class="status-light" style="background:#55BD8A;box-shadow:0 0 8px #55BD8A;"></span>
+              <span>Published</span>
+            </div>
+            <span class="count">2</span>
+          </div>
+
+          <!-- Card 4.1 -->
+          <label class="kanban-card-wrapper" for="select-card-bbq">
+            <input type="checkbox" id="select-card-bbq" class="card-select-toggle">
+            
+            <div class="kanban-card">
+              <div class="card-meta-row">
+                <span class="meta-tag tag-sports" style="background:#EBF7EE; color:#2E6A4F;">
+                  <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                  Fully Approved
+                </span>
+              </div>
+
+              <h4>Welcome BBQ</h4>
+              <p>Outside residential dining hall snags social welcome evening.</p>
+
+              <div class="card-footer-row">
+                <!-- Ready to Publish Check Badge (Idea 9) -->
+                <span class="publish-check-badge">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  Active feed event
+                </span>
+                <span style="font-weight: 700; color: var(--cqu-teal);">18 RSVPs</span>
+              </div>
+            </div>
+          </label>
+
+          <!-- Card 4.2 -->
+          <label class="kanban-card-wrapper" for="select-card-study">
+            <input type="checkbox" id="select-card-study" class="card-select-toggle">
+            
+            <div class="kanban-card">
+              <div class="card-meta-row">
+                <span class="meta-tag tag-sports" style="background:#EBF7EE; color:#2E6A4F;">
+                  <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3a1 1 0 0 1 1-1h15v20H5a1 1 0 0 1-1-1z"/></svg>
+                  Fully Approved
+                </span>
+              </div>
+
+              <h4>Study Session</h4>
+              <p>Low-key group academic session in common lounge room.</p>
+
+              <div class="card-footer-row">
+                <span class="publish-check-badge">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  Active feed event
+                </span>
+                <span style="font-weight: 700; color: var(--cqu-teal);">5 RSVPs</span>
+              </div>
+            </div>
+          </label>
+        </div>
+
+      </div>
+    </div>
   </main>
 </body>
 </html>
