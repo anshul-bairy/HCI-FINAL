@@ -1,3 +1,15 @@
+<!-- 
+====================================================================
+File: issue-report.html
+Assessment: Assessment 3 ResConnect Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+
+Purpose: Allows residents to privately submit issues to RLs.
+====================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,6 +118,7 @@
       <a href="index.html">Dashboard</a>
       <a href="duty-report.html">Duty Report</a>
       <a href="events.html">Event Kanban</a>
+      <!-- kept this form super straightforward so residents don't feel intimidated when reporting a private issue -->
       <a href="feed.html" class="active">Resident Feed</a>
     </nav>
 
@@ -158,14 +171,17 @@
         </div>
 
         <div class="form-group">
-          <label>Category</label>
-          <select required>
-            <option value="">Select a category...</option>
-            <option value="maintenance">Maintenance & Repairs</option>
-            <option value="noise">Noise Complaint</option>
-            <option value="welfare">Welfare Check Request</option>
-            <option value="other">Other</option>
-          </select>
+            <!-- native html dropdowns used here to keep it lightweight and ensure it works on all mobile devices -->
+            <label>
+              Category
+              <select required>
+                <option value="">Select a category...</option>
+                <option value="maintenance">Maintenance & Repairs</option>
+                <option value="noise">Noise Complaint</option>
+                <option value="welfare">Welfare Check Request</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
         </div>
 
         <!-- CSS Duplicate Issue Hack -->
@@ -201,7 +217,8 @@
 
         <div class="form-group">
           <label>Description</label>
-          <textarea rows="4" placeholder="Please describe the issue..." required></textarea>
+            <!-- leaving a generous text area because residents usually write a lot when they're stressed out -->
+            <textarea rows="4" placeholder="Describe the issue..." required></textarea>
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 32px;">

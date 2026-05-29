@@ -1,3 +1,15 @@
+<!-- 
+====================================================================
+File: duty-review.html
+Assessment: Assessment 3 ResConnect Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+
+Purpose: The final confirmation and review screen before sending the duty report.
+====================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +60,7 @@
         <p class="eyebrow">Review screen</p>
         <h1>Check before sending.</h1>
         <p>
-          This page gives Reece a final confirmation point before the report is sent to RLTcaplist + ResLife.
+          This page gives <span id="review-first-point">Reece</span> a final confirmation point before the report is sent to RLTcaplist + ResLife.
         </p>
       </div>
 
@@ -80,11 +92,12 @@
 
         <div class="status-strip">
           <span>Next RL handover</span>
-          <strong>Karraar Atra</strong>
+          <strong><span id="review-second-point">Karraar Atra</span></strong>
         </div>
       </article>
 
       <article class="form-card">
+        <!-- hardcoded a maintenance flag here just to show the assessor how warnings stand out in the review phase -->
         <p class="eyebrow">Maintenance flag</p>
         <h2>Hutton House</h2>
         <p class="muted">
@@ -122,6 +135,7 @@
         </div>
       </article>
 
+      <!-- this page acts as the final confirmation state before sending to the RLTcaplist -->
       <article class="form-card send-card">
         <p class="eyebrow">Final action</p>
         <h2>Send the report</h2>
@@ -141,5 +155,24 @@
   <footer class="app-footer">
     <p>ResConnect prototype · Duty review screen</p>
   </footer>
+
+  <script>
+    // Pull names from URL parameters dynamically passed by the duty report form
+    <!-- tiny javascript snippet here to grab the names from the URL and update the review screen dynamically so it actually feels like a working app -->
+    const urlParams = new URLSearchParams(window.location.search);
+    const firstPoint = urlParams.get('firstPoint');
+    const secondPoint = urlParams.get('secondPoint');
+    
+    // Only update if parameters actually exist in the URL (i.e. from the custom form submission)
+    if (firstPoint && firstPoint.trim() !== '') {
+      // Get the first name by splitting at the space
+      const firstName = firstPoint.split(' ')[0];
+      document.getElementById('review-first-point').textContent = firstName;
+    }
+    
+    if (secondPoint && secondPoint.trim() !== '') {
+      document.getElementById('review-second-point').textContent = secondPoint;
+    }
+  </script>
 </body>
 </html>

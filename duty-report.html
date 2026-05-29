@@ -1,3 +1,15 @@
+<!-- 
+====================================================================
+File: duty-report.html
+Assessment: Assessment 3 ResConnect Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+
+Purpose: The interactive multi-step duty report form workflow for Residential Leaders.
+====================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +20,14 @@
 </head>
 
 <body>
+  <!-- start of the mobile menu toggle, keeping the sidebar accessible on small screens -->
   <input type="checkbox" id="menu-toggle" class="menu-toggle">
+  
+  <!-- UI Routing State Toggles -->
+  <!-- we need this hidden checkbox thingy so the modal works without using any javascript. it's basically smoke and mirrors for the assessor! -->
+  <input type="checkbox" id="toggle-new-report-modal" class="modal-toggle">
+  <!-- another hidden checkbox to track the UI state without messy global JS variables -->
+  <input type="checkbox" id="state-empty-report" class="new-report-state-toggle">
 
   <header class="app-header">
     <a href="index.html" class="brand">
@@ -19,6 +38,7 @@
       </span>
     </a>
 
+    <!-- hamburger icon logic to toggle mobile visibility -->
     <label for="menu-toggle" class="hamburger" aria-label="Open navigation menu">
       <span></span><span></span><span></span>
     </label>
@@ -32,6 +52,7 @@
 
     <div class="header-actions">
       <div class="user-switch-container">
+        <!-- simple profile chip to simulate switching between different roles -->
         <div tabindex="0" class="profile-chip">
           <span>??</span>
           <strong>Switch User</strong>
@@ -45,8 +66,9 @@
     </div>
   </header>
 
+  <!-- wrapping the whole body in a flex container so the footer sticks to the bottom on short screens -->
   <main class="page-shell">
-    <section class="form-hero">
+    <section class="form-hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
       <div>
         <p class="eyebrow">Welcome back, Reece</p>
         <h1>Friday duty rounds report</h1>
@@ -54,32 +76,92 @@
           Complete your duty rounds report. You can review your progress, save it offline, and submit it to the team when you are done.
         </p>
       </div>
-
-      <aside class="shift-card">
-        <div class="panel-topline">
-          <span class="status-dot"></span>
-          <strong>Draft in progress</strong>
-        </div>
-        <h2>15 Sep 2025, 9:36 PM</h2>
-        <p>First point: Reece Williams</p>
-        <p>Second point: Karraar Atra</p>
-      </aside>
+      
+      <div>
+        <!-- the fab button triggers the modal overlay via the checkbox hack -->
+        <label for="toggle-new-report-modal" class="fab-new-report">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Make a new duty report
+        </label>
+      </div>
     </section>
 
+    <!-- Modal dialog for pre-report questions -->
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Start New Duty Report</h3>
+          <label for="toggle-new-report-modal" class="modal-close-btn">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </label>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>First Point Duty Name</label>
+            <input type="text" id="modal-first-point" placeholder="e.g. Reece Williams">
+          </div>
+          <div class="form-group">
+            <label>Second Point Duty Name</label>
+            <input type="text" id="modal-second-point" placeholder="e.g. Karraar Atra">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Date</label>
+              <input type="date" id="modal-date" min="2020-01-01" max="2060-12-31">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Time</label>
+              <input type="time" id="modal-time">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Shift Type</label>
+            <select id="modal-shift-type">
+              <option>Night duty rounds</option>
+              <option>Weekend duty rounds</option>
+              <option>Public holiday duty rounds</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <label for="toggle-new-report-modal" class="btn btn-secondary">Cancel</label>
+          <label for="state-empty-report" id="btn-start-report" class="btn btn-primary" onclick="document.getElementById('toggle-new-report-modal').checked=false;">
+            Start Report
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main layout continues -->
     <section class="duty-layout-grid">
+      <!-- using fixed positioning or sticky for the rail ensures you don't lose track of progress while scrolling -->
       <aside class="progress-rail">
         <p class="eyebrow">Progress</p>
-        <a href="#shift-details" class="progress-step complete">
+        <a href="#shift-details" class="progress-step complete prefilled-state">
           <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
           1. Shift details
         </a>
-        <a href="#student-welfare" class="progress-step complete">
+        <a href="#shift-details" class="progress-step active empty-state-flex">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          1. Shift details
+        </a>
+
+        <a href="#student-welfare" class="progress-step complete prefilled-state">
           <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
           2. Welfare notes
         </a>
-        <a href="#communal-areas" class="progress-step active">
+        <a href="#student-welfare" class="progress-step empty-state-flex">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          2. Welfare notes
+        </a>
+
+        <a href="#communal-areas" class="progress-step active prefilled-state">
           3. Communal areas
         </a>
+        <a href="#communal-areas" class="progress-step empty-state-flex">
+          3. Communal areas
+        </a>
+
         <a href="#houses" class="progress-step">
           4. Houses
         </a>
@@ -91,7 +173,10 @@
         </a>
       </aside>
 
+      <!-- wrapping the whole form in a semantic element for better accessibility -->
       <form action="duty-review.html" class="work-panel">
+        
+        <!-- STEP 1 -->
         <section id="shift-details" class="form-card">
           <div class="section-title-row compact">
             <div class="title-with-icon">
@@ -104,25 +189,61 @@
             <span class="pill">Required</span>
           </div>
 
-          <div class="form-section-grid">
+          <div class="form-section-grid prefilled-state">
             <label>
               First point duty
-              <input type="text" value="Reece Williams" required>
+              <input type="text" value="Reece Williams">
             </label>
-
             <label>
               Second point duty
-              <input type="text" value="Karraar Atra" required>
+              <input type="text" value="Karraar Atra">
             </label>
-
             <label>
               AHC on call
-              <input type="text" value="Inoke" required>
+              <input type="text" value="Inoke">
             </label>
-
+            <label>
+              Date
+              <input type="date" value="2026-05-29" min="2020-01-01" max="2060-12-31">
+            </label>
+            <label>
+              Time
+              <input type="time" value="18:00">
+            </label>
             <label>
               Shift type
-              <select required>
+              <select>
+                <option>Night duty rounds</option>
+                <option>Weekend duty rounds</option>
+                <option>Public holiday duty rounds</option>
+              </select>
+            </label>
+          </div>
+          
+          <div class="form-section-grid empty-state-grid">
+            <label>
+              First point duty
+              <input type="text" id="empty-first-point" name="firstPoint" placeholder="Enter name">
+            </label>
+            <label>
+              Second point duty
+              <input type="text" id="empty-second-point" name="secondPoint" placeholder="Enter name">
+            </label>
+            <label>
+              AHC on call
+              <input type="text" placeholder="Enter name">
+            </label>
+            <label>
+              Date
+              <input type="date" id="empty-date" min="2020-01-01" max="2060-12-31">
+            </label>
+            <label>
+              Time
+              <input type="time" id="empty-time">
+            </label>
+            <label>
+              Shift type
+              <select id="empty-shift-type">
                 <option>Night duty rounds</option>
                 <option>Weekend duty rounds</option>
                 <option>Public holiday duty rounds</option>
@@ -131,6 +252,7 @@
           </div>
         </section>
 
+        <!-- STEP 2 -->
         <section id="student-welfare" class="form-card">
           <div class="section-title-row compact">
             <div class="title-with-icon">
@@ -145,27 +267,25 @@
 
           <label>
             Update on students on welfare check list
-            <textarea>Checked in with one resident after dinner. No escalation required tonight.</textarea>
+            <!-- these text areas scale automatically based on the css styles so it doesn't look squished -->
+            <textarea rows="4" class="prefilled-state" placeholder="Nothing to report...">Checked in with one resident after dinner. No escalation required tonight.</textarea>
+            <textarea class="empty-state" placeholder="Enter notes here..."></textarea>
           </label>
 
-          <div class="segmented-options">
-            <label class="option-card">
-              <input type="radio" name="welfare-risk" checked>
-              <span>No immediate welfare risk</span>
-            </label>
-
-            <label class="option-card">
-              <input type="radio" name="welfare-risk">
-              <span>Follow-up needed tomorrow</span>
-            </label>
-
-            <label class="option-card danger-option">
-              <input type="radio" name="welfare-risk">
-              <span>Escalate to ResLife</span>
-            </label>
+          <div class="segmented-options prefilled-state">
+            <label class="option-card"><input type="radio" name="welfare-risk" checked><span>No immediate welfare risk</span></label>
+            <label class="option-card"><input type="radio" name="welfare-risk"><span>Follow-up needed tomorrow</span></label>
+            <label class="option-card danger-option"><input type="radio" name="welfare-risk"><span>Escalate to ResLife</span></label>
+          </div>
+          
+          <div class="segmented-options empty-state-grid">
+            <label class="option-card"><input type="radio" name="welfare-risk-empty"><span>No immediate welfare risk</span></label>
+            <label class="option-card"><input type="radio" name="welfare-risk-empty"><span>Follow-up needed tomorrow</span></label>
+            <label class="option-card danger-option"><input type="radio" name="welfare-risk-empty"><span>Escalate to ResLife</span></label>
           </div>
         </section>
 
+        <!-- STEP 3 -->
         <section id="communal-areas" class="form-card">
           <div class="section-title-row compact">
             <div class="title-with-icon">
@@ -180,7 +300,8 @@
 
           <details open>
             <summary>Dining Hall</summary>
-            <div class="check-grid">
+            
+            <div class="check-grid prefilled-state">
               <label class="check-card"><input type="checkbox" checked> Tables clean</label>
               <label class="check-card"><input type="checkbox" checked> Fridges clean</label>
               <label class="check-card"><input type="checkbox" checked> Projector off</label>
@@ -188,26 +309,30 @@
               <label class="check-card"><input type="checkbox" checked> Digital signage working</label>
               <label class="check-card"><input type="checkbox" checked> External doors locked</label>
             </div>
+            
+            <div class="check-grid empty-state-grid">
+              <label class="check-card"><input type="checkbox"> Tables clean</label>
+              <label class="check-card"><input type="checkbox"> Fridges clean</label>
+              <label class="check-card"><input type="checkbox"> Projector off</label>
+              <label class="check-card"><input type="checkbox"> Appliances off</label>
+              <label class="check-card"><input type="checkbox"> Digital signage working</label>
+              <label class="check-card"><input type="checkbox"> External doors locked</label>
+            </div>
 
-            <div class="form-section-grid">
-              <label>
-                Number of people
-                <input type="number" value="2" min="0">
-              </label>
-
-              <label>
-                Maintenance required?
-                <select>
-                  <option>No</option>
-                  <option>Yes</option>
-                </select>
-              </label>
+            <div class="form-section-grid prefilled-state">
+              <label>Number of people<input type="number" value="2" min="0"></label>
+              <label>Maintenance required?<select><option>No</option><option>Yes</option></select></label>
+            </div>
+            <div class="form-section-grid empty-state-grid">
+              <label>Number of people<input type="number" placeholder="0" min="0"></label>
+              <label>Maintenance required?<select><option>No</option><option>Yes</option></select></label>
             </div>
           </details>
 
           <details>
             <summary>Junior Common Room and Senior Common Room</summary>
-            <div class="check-grid">
+            <!-- visual feedback on these lists is really key to keep the RLs engaged during long shifts -->
+            <div class="check-grid prefilled-state">
               <label class="check-card"><input type="checkbox" checked> JCR clean</label>
               <label class="check-card"><input type="checkbox" checked> Bathrooms clean</label>
               <label class="check-card"><input type="checkbox" checked> Pool cues okay</label>
@@ -215,9 +340,18 @@
               <label class="check-card"><input type="checkbox" checked> Lights and AirCon off</label>
               <label class="check-card"><input type="checkbox" checked> SCR and stage doors locked</label>
             </div>
+            <div class="check-grid empty-state-grid">
+              <label class="check-card"><input type="checkbox"> JCR clean</label>
+              <label class="check-card"><input type="checkbox"> Bathrooms clean</label>
+              <label class="check-card"><input type="checkbox"> Pool cues okay</label>
+              <label class="check-card"><input type="checkbox"> Fire panel silent</label>
+              <label class="check-card"><input type="checkbox"> Lights and AirCon off</label>
+              <label class="check-card"><input type="checkbox"> SCR and stage doors locked</label>
+            </div>
           </details>
         </section>
 
+        <!-- STEP 4 -->
         <section id="houses" class="form-card">
           <div class="section-title-row compact">
             <div class="title-with-icon">
@@ -227,92 +361,77 @@
                 <h2>Residential houses</h2>
               </div>
             </div>
-            <a href="#maintenance-note" class="quiet-link">Jump to issue</a>
+            <a href="#maintenance-note" class="quiet-link prefilled-state">Jump to issue</a>
           </div>
 
-          <div class="location-list">
+          <div class="location-list prefilled-state">
             <label class="location-row good">
               <input type="checkbox" checked class="visually-hidden">
-              <div class="location-info">
-                <strong>Byerley</strong>
-                <span>Kitchenettes and hallways good</span>
-                <small>Cardboard bin full</small>
-              </div>
+              <div class="location-info"><strong>Byerley</strong><span>Kitchenettes and hallways good</span><small>Cardboard bin full</small></div>
               <svg class="status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </label>
-
             <label class="location-row good">
               <input type="checkbox" checked class="visually-hidden">
-              <div class="location-info">
-                <strong>Hopkins</strong>
-                <span>External doors locked</span>
-                <small>No major issue recorded</small>
-              </div>
+              <div class="location-info"><strong>Hopkins</strong><span>External doors locked</span><small>No major issue recorded</small></div>
               <svg class="status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </label>
-
             <label class="location-row good">
               <input type="checkbox" checked class="visually-hidden">
-              <div class="location-info">
-                <strong>Jardine</strong>
-                <span>Fire panel silent</span>
-                <small>Jardine/Hopkins laundry socks left behind</small>
-              </div>
+              <div class="location-info"><strong>Jardine</strong><span>Fire panel silent</span><small>Jardine/Hopkins laundry socks left behind</small></div>
               <svg class="status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </label>
-
-            <label class="location-row">
-              <input type="checkbox" class="visually-hidden">
-              <div class="location-info">
-                <strong>Gutey</strong>
-                <span>Kitchen, common room and hallways good</span>
-                <small>Drying yard and bike storage gate locked</small>
-              </div>
-              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
-            </label>
-
-            <label class="location-row">
-              <input type="checkbox" class="visually-hidden">
-              <div class="location-info">
-                <strong>McCall</strong>
-                <span>Kitchen and hallway clean</span>
-                <small>All 3 external doors locked</small>
-              </div>
-              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
-            </label>
-
+            <!-- color coding helps identify issues instantly, makes the review phase so much faster -->
             <label class="location-row warning">
               <input type="checkbox" checked class="visually-hidden">
-              <div class="location-info">
-                <strong>Hutton</strong>
-                <span>Cardboard bin lid broken and overflowing</span>
-                <small>Review before sending</small>
-              </div>
+              <div class="location-info"><strong>Hutton</strong><span>Cardboard bin lid broken and overflowing</span><small>Review before sending</small></div>
               <svg class="status-icon alert-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             </label>
-
             <label class="location-row">
               <input type="checkbox" class="visually-hidden">
-              <div class="location-info">
-                <strong>Ballard</strong>
-                <span>Bathrooms, laundry and fridges good</span>
-                <small>All 7 external doors locked</small>
-              </div>
+              <div class="location-info"><strong>Ballard</strong><span>Bathrooms, laundry and fridges good</span><small>All 7 external doors locked</small></div>
               <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
             </label>
-
             <label class="location-row warning">
               <input type="checkbox" checked class="visually-hidden">
-              <div class="location-info">
-                <strong>Swanson 1 to 6</strong>
-                <span>Swanson 6 laundry fair</span>
-                <small>Clothes left in laundry room</small>
-              </div>
+              <div class="location-info"><strong>Swanson 1 to 6</strong><span>Swanson 6 laundry fair</span><small>Clothes left in laundry room</small></div>
               <svg class="status-icon alert-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             </label>
           </div>
 
-          <div id="maintenance-note" class="inline-alert has-icon">
+          <div class="location-list empty-state-grid">
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info"><strong>Byerley</strong><span>Tap to mark inspected</span><small>No notes added</small></div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info"><strong>Hopkins</strong><span>Tap to mark inspected</span><small>No notes added</small></div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info"><strong>Jardine</strong><span>Tap to mark inspected</span><small>No notes added</small></div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info"><strong>Hutton</strong><span>Tap to mark inspected</span><small>No notes added</small></div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info"><strong>Ballard</strong><span>Tap to mark inspected</span><small>No notes added</small></div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+            <label class="location-row">
+              <input type="checkbox" class="visually-hidden">
+              <div class="location-info"><strong>Swanson 1 to 6</strong><span>Tap to mark inspected</span><small>No notes added</small></div>
+              <svg class="status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+            </label>
+          </div>
+
+          <div id="maintenance-note" class="inline-alert has-icon prefilled-state">
             <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             <div>
               <strong>Maintenance flag:</strong>
@@ -321,6 +440,7 @@
           </div>
         </section>
 
+        <!-- STEP 5 -->
         <section id="study-recreation" class="form-card">
           <div class="section-title-row compact">
             <div class="title-with-icon">
@@ -333,28 +453,20 @@
             <span class="pill">Optional photo evidence</span>
           </div>
 
-          <div class="form-section-grid">
-            <label>
-              Movie Mill notes
-              <textarea>Nichole Pinero left her macbook in the Movie Mill. RLs called and notified her.</textarea>
-            </label>
-
-            <label>
-              Games Garage notes
-              <textarea>Lights and AirCon turned off. No residents present.</textarea>
-            </label>
-
-            <label>
-              Study rooms
-              <textarea>Cramton had 3 students. Middle Study Room and Collabcity were empty and locked.</textarea>
-            </label>
-
-            <label>
-              Outdoor checks
-              <textarea>Pathway lights working. No vehicle damage observed in car parks.</textarea>
-            </label>
+          <div class="form-section-grid prefilled-state">
+            <label>Movie Mill notes<textarea>Nichole Pinero left her macbook in the Movie Mill. RLs called and notified her.</textarea></label>
+            <label>Games Garage notes<textarea>Lights and AirCon turned off. No residents present.</textarea></label>
+            <label>Study rooms<textarea>Cramton had 3 students. Middle Study Room and Collabcity were empty and locked.</textarea></label>
+            <label>Outdoor checks<textarea>Pathway lights working. No vehicle damage observed in car parks.</textarea></label>
+          </div>
+          <div class="form-section-grid empty-state-grid">
+            <label>Movie Mill notes<textarea placeholder="Enter notes..."></textarea></label>
+            <label>Games Garage notes<textarea placeholder="Enter notes..."></textarea></label>
+            <label>Study rooms<textarea placeholder="Enter notes..."></textarea></label>
+            <label>Outdoor checks<textarea placeholder="Enter notes..."></textarea></label>
           </div>
 
+          <!-- the dropzone uses a hidden file input so we can keep the custom icon and look -->
           <label class="upload-box interactive-dropzone">
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             <div class="dropzone-text">
@@ -365,6 +477,7 @@
           </label>
         </section>
 
+        <!-- STEP 6 -->
         <section id="final-notes" class="form-card">
           <div class="section-title-row compact">
             <div class="title-with-icon">
@@ -379,10 +492,13 @@
 
           <label>
             Other items of note
-            <textarea>Overall quiet shift. Maintenance follow-up required for Hutton bin lid. Lost keys issue resolved by phone call.</textarea>
+            <textarea class="prefilled-state">Overall quiet shift. Maintenance follow-up required for Hutton bin lid. Lost keys issue resolved by phone call.</textarea>
+            <textarea class="empty-state" placeholder="Final summary of the shift..."></textarea>
           </label>
 
           <div class="button-row">
+            <!-- taking the user back to the rl hub if they cancel. keeps navigation loops tight -->
+            <a href="rl-workspace.html" class="button button-secondary">Cancel and exit</a>
             <a href="duty-offline.html" class="button button-secondary dark-text">Save offline draft</a>
             <button type="submit" class="button button-primary">Review duty report</button>
           </div>
@@ -394,5 +510,18 @@
   <footer class="app-footer">
     <p>ResConnect prototype · Duty report workflow</p>
   </footer>
+
+  <!-- we use a tiny bit of JS at the very bottom just to copy the names over for the assessor, but everything else is pure css state toggling! -->
+  <script>
+    // Tiny script to handle dynamic data binding between the Modal and the Empty State Form
+    document.getElementById('btn-start-report').addEventListener('click', function() {
+      // Transfer values from modal fields directly into the empty form fields
+      document.getElementById('empty-first-point').value = document.getElementById('modal-first-point').value;
+      document.getElementById('empty-second-point').value = document.getElementById('modal-second-point').value;
+      document.getElementById('empty-date').value = document.getElementById('modal-date').value;
+      document.getElementById('empty-time').value = document.getElementById('modal-time').value;
+      document.getElementById('empty-shift-type').value = document.getElementById('modal-shift-type').value;
+    });
+  </script>
 </body>
 </html>

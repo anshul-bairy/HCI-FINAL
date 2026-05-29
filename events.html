@@ -1,3 +1,15 @@
+<!-- 
+====================================================================
+File: events.html
+Assessment: Assessment 3 ResConnect Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+
+Purpose: The Event Kanban board for managing risk assessments and publishing college events.
+====================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -658,6 +670,7 @@
   <input type="checkbox" id="state-review" class="new-card-state-toggle">
 
   <header class="app-header">
+    <!-- brand logo block: RC for ResConnect, keeping it simple and recognizable -->
     <a href="index.html" class="brand">
       <span class="brand-mark">RC</span>
       <span class="brand-copy"><strong>ResConnect</strong><small>Capricornia College</small></span>
@@ -668,6 +681,7 @@
     </label>
 
     <nav class="main-nav" aria-label="Main navigation">
+      <!-- semantic nav tags so it's fully accessible if they run a screenreader over it -->
       <a href="index.html">Dashboard</a>
       <a href="duty-report.html">Duty Report</a>
       <a href="events.html" class="active">Event Kanban</a>
@@ -675,6 +689,7 @@
     </nav>
 
     <div class="header-actions">
+      <!-- user switch chip for quick context swapping between RL, student, or admin views -->
       <div class="user-switch-container">
         <div tabindex="0" class="profile-chip">
           <span>??</span>
@@ -694,6 +709,7 @@
       <div>
         <p class="eyebrow">Scenario 2</p>
         <h1>Event Kanban</h1>
+        <!-- added a small helper text here to guide the user on what this board is for -->
         <p>Managing event risk assessments and approvals.</p>
       </div>
       <div>
@@ -717,6 +733,7 @@
         <div class="modal-body">
           <div class="form-group">
             <label>Event Name</label>
+            <!-- autofocus would be nice here but keeping it standard for now -->
             <input type="text" id="event-input-name" placeholder="e.g. Trivia Championship" required>
           </div>
           <div class="form-group">
@@ -737,6 +754,7 @@
           </div>
           <div class="form-group">
             <label>Event Description</label>
+            <!-- textarea for more detailed event planning notes -->
             <textarea id="event-input-desc" placeholder="Brief outline of event logistics, maximum capacity parameters, and equipment details." rows="3"></textarea>
           </div>
         </div>
@@ -767,6 +785,7 @@
               <span class="status-light"></span>
               <span>Draft</span>
             </div>
+            <!-- simple counter badge at the top of the column to see how many events are pending -->
             <span class="count">1</span>
           </div>
 

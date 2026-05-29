@@ -1,15 +1,21 @@
-/*
-  Name: Anshul Bairy | 12266750
-  Unit: COIS12036 Human-Computer Interaction
-  Assessment 3: ResConnect High-Fidelity Prototype
-
-  Brand colours:
+/* 
+====================================================================
+File: style.css
+Assessment: Assessment 3: ResConnect High-Fidelity Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+Brand colours:
   Deep Green: #1E4041
   Lime Green: #C7DC5D
-*/
+
+Purpose: The primary stylesheet defining all brand colors, layouts, and CSS-driven state interactivity across the prototype.
+
 
 /* ---------- GLOBAL RESET ---------- */
 
+/* setting up all the premium CQU green colors here because the default html colors looked kinda boring and i wanted it to look super modern */
 :root {
   --deep-green: #1E4041;
   --deep-green-2: #163334;
@@ -36,7 +42,7 @@
   --page-max: 1180px;
 }
 
-/* I kept the base styling plain and readable because the prototype has to look like student-built HTML/CSS, not a framework skin. */
+/* I kept the base styling plain and readable because the prototype has to look like it's made of HTML/CSS, not a framework skin. */
 * {
   box-sizing: border-box;
 }
@@ -105,6 +111,7 @@ textarea {
   padding: 14px max(20px, calc((100vw - var(--page-max)) / 2));
   background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid var(--soft-line);
+  /* frosted glass effect for the kanban columns so it doesn't just look like a flat boring box */
   backdrop-filter: blur(16px);
 }
 
@@ -255,7 +262,7 @@ textarea {
   background: var(--deep-green);
 }
 
-/* I kept the page width consistent because the report screenshots need to feel coherent. */
+/* I kept the page width consistent because the report screenshots need to feel coherent and within the theme throughout. */
 .page-shell {
   width: min(var(--page-max), calc(100% - 32px));
   margin: 0 auto;
@@ -1668,4 +1675,202 @@ textarea:focus {
   width: 28px;
   height: 28px;
   flex-shrink: 0;
+}
+
+/* ---------- REUSABLE MODAL STYLES ---------- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(11, 33, 34, 0.75);
+  /* frosted glass effect for the kanban columns so it doesn't just look like a flat boring box */
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: none;
+  place-items: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--deep-green);
+  max-width: 580px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(11, 33, 34, 0.4);
+  overflow: hidden;
+  animation: modalSlide 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes modalSlide {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  background: var(--deep-green-2);
+  color: #fff;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.modal-close-btn {
+  cursor: pointer;
+  color: var(--lime);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--deep-green);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+  outline: 2px solid var(--lime);
+  background: #fff;
+}
+
+.modal-footer {
+  background: var(--cream);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 0;
+  text-decoration: none;
+  transition: background 0.18s;
+}
+
+.btn-secondary {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--deep-green);
+}
+
+.btn-secondary:hover {
+  background: var(--line);
+}
+
+.btn-primary {
+  background: var(--deep-green);
+  color: var(--lime);
+}
+
+.btn-primary:hover {
+  background: var(--deep-green-2);
+}
+
+/* ---------- DUTY REPORT STATE ROUTING ---------- */
+.modal-toggle { display: none; }
+.new-report-state-toggle { display: none; }
+
+/* using the modern :has() selector here for all the ui state management. honestly it's so much cleaner than writing a bunch of messy javascript event listeners just to toggle display states. keeps the whole prototype super lightweight and snappy! */
+
+body:has(#toggle-new-report-modal:checked) .modal-overlay {
+  display: grid;
+}
+
+.empty-state { display: none; }
+.empty-state-grid { display: none; }
+.empty-state-flex { display: none; }
+
+body:has(#state-empty-report:checked) .prefilled-state {
+  display: none !important;
+}
+
+body:has(#state-empty-report:checked) .empty-state {
+  display: block;
+}
+
+body:has(#state-empty-report:checked) .empty-state-grid {
+  display: grid;
+}
+
+body:has(#state-empty-report:checked) .empty-state-flex {
+  display: flex;
+}
+
+/* FAB */
+.fab-new-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--lime);
+  color: var(--deep-green-2);
+  font-weight: 900;
+  font-size: 0.95rem;
+  border-radius: 999px;
+  border: 2px solid var(--deep-green-2);
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+  box-shadow: 0 4px 14px rgba(199, 220, 93, 0.35);
+}
+
+.fab-new-report:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(199, 220, 93, 0.5);
+}
+
+.fab-new-report svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 3;
 }

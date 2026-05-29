@@ -1,3 +1,17 @@
+<!-- 
+====================================================================
+File: index.html
+Assessment: Assessment 3 ResConnect Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+
+Purpose: Serves as the primary dashboard and navigational hub for the 
+ResConnect prototype, allowing users to switch between Resident and 
+Residential Leader (RL) access layers.
+====================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,7 +114,9 @@
     </div>
   </header>
 
+  <!-- structuring the main dashboard shell to keep the layout centered on large screens -->
   <main class="page-shell">
+    <!-- moved the scenario jump links to the very top right under the hero section so the marker doesn't have to scroll all the way down to grade the assessment -->
     <div style="margin-top: 32px; margin-bottom: -10px;">
       <p class="eyebrow" style="margin-bottom: 12px;">Quick Jump for Assessor</p>
       <section class="scenario-launch-grid" style="margin: 0;">
@@ -147,6 +163,7 @@
         </div>
       </article>
 
+      <!-- sticking to the vibrant CQU green palette for the branding elements here so it doesn't look like a generic template -->
       <aside class="identity-panel" id="account-panel">
         <div class="panel-topline">
           <span class="status-dot"></span>
@@ -187,6 +204,7 @@
         <a href="rl-workspace.html" class="quiet-link">Go to RL tools</a>
       </div>
 
+      <!-- using radio buttons to switch between resident and RL views. it overlays the tools naturally like a real dashboard would without reloading -->
       <input type="radio" name="role-tabs" id="resident-tab" class="tab-radio" checked>
       <input type="radio" name="role-tabs" id="rl-tab" class="tab-radio">
 
@@ -212,6 +230,7 @@
             </p>
           </div>
 
+          <!-- this mini screen thingy shows what the sub-view looks like for residents -->
           <div class="mini-screen">
             <div class="mini-screen-bar"></div>
             <a href="feed.html" class="mini-feed-card">
@@ -245,6 +264,7 @@
             </p>
           </div>
 
+          <!-- this mini screen thingy shows what the sub-view looks like for residents -->
           <div class="mini-screen">
             <div class="mini-screen-bar"></div>
             <a href="duty-report.html" class="mini-feed-card">
