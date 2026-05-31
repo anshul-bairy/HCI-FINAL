@@ -1,3 +1,15 @@
+<!-- 
+====================================================================
+File: feed.html
+Assessment: Assessment 3 ResConnect Prototype
+Author: Anshul Bairy
+Student ID: 12266750
+Unit Coordinator: Ayub Bokani
+Tutor: Maneerat Rumsamrong
+
+Purpose: The main resident social feed showing upcoming events and RSVP statuses.
+====================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +17,387 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ResConnect | Resident Feed</title>
   <link rel="stylesheet" href="style.css">
+
+  <!--
+    IMPORTANT CSS-ONLY TRICK - READ BEFORE EDITING
+    The filter tabs (All / Events / Announcements) work with hidden radio inputs
+    and the CSS general sibling selector (~).
+
+    KEY RULE: the radio inputs MUST be direct siblings of both .feed-filter-bar
+    AND .feed-grid inside the same parent (.feed-wrapper). If they are outside
+    that parent, the tilde selector cannot reach the cards. That is why I moved
+    them INSIDE .feed-wrapper this time (previous attempt broke because they were
+    outside main and could not reach nested elements).
+
+    Same deal for RSVP toggles. Each hidden checkbox sits INSIDE .feed-grid
+    directly before its card, so the :checked + .feed-card selector works.
+  -->
+  <style>
+
+    /* CQU green palette with darker shades as requested */
+    /* defining extra green vars here so I don't mess with the global style.css */
+    :root {
+      --cqu-forest:  #0F2829;   /* darkest, almost black-green */
+      --cqu-dark:    #163334;   /* very dark green */
+      --cqu-mid:     #1E4041;   /* standard deep green, same as --deep-green */
+      --cqu-teal:    #2A5557;   /* medium dark teal */
+      --cqu-light:   #3A6E70;   /* slightly lighter teal */
+      --cqu-mist:    #E8F0F0;   /* very light green tint for backgrounds */
+      --cqu-mist2:   #D4E5E5;   /* slightly darker mist */
+    }
+
+    /* FILTER RADIO INPUTS */
+    /* these are invisible, they only hold state for :checked selectors */
+    .feed-filter-radio { display: none; }
+
+    /* filter pill bar */
+    .feed-filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .feed-filter-bar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: 999px;
+      border: 2px solid var(--cqu-mist2);
+      background: var(--paper);
+      color: var(--cqu-teal);
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
+      user-select: none;
+    }
+
+    /* icon inside the pill inherits the label colour */
+    .feed-filter-bar label svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .feed-filter-bar label:hover {
+      border-color: var(--cqu-mid);
+      background: var(--cqu-mist);
+      color: var(--cqu-dark);
+    }
+
+    /*
+      Active pill styling. Which label lights up depends on which radio is :checked.
+      Because all three inputs are INSIDE .feed-wrapper (same parent as .feed-filter-bar),
+      the general sibling selector tilde actually works here.
+    */
+    #filter-all:checked      ~ .feed-filter-bar label[for="filter-all"],
+    #filter-events:checked   ~ .feed-filter-bar label[for="filter-events"],
+    #filter-announce:checked ~ .feed-filter-bar label[for="filter-announce"] {
+      background: var(--cqu-dark);
+      color: var(--lime);
+      border-color: var(--cqu-dark);
+      box-shadow: 0 4px 14px rgba(22, 51, 52, 0.35);
+    }
+
+    /*
+      Card visibility. Hide and show based on which filter is active.
+      .feed-grid is a sibling of the radio inputs (both inside .feed-wrapper),
+      so :checked tilde .feed-grid descendants are reachable.
+    */
+    #filter-announce:checked ~ .feed-grid .feed-card[data-cat="event"]    { display: none; }
+    #filter-events:checked   ~ .feed-grid .feed-card[data-cat="announce"] { display: none; }
+
+    /* RSVP CHECKBOX TOGGLES */
+    /* same trick: hidden checkbox, label acts as the clickable button */
+    .rsvp-toggle { display: none; }
+
+    /* default RSVP label looks like a green primary button */
+    .rsvp-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: var(--cqu-mid);
+      color: var(--lime);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+      user-select: none;
+    }
+
+    .rsvp-label svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .rsvp-label:hover {
+      background: var(--cqu-dark);
+    }
+
+    /* use ::before to swap the button text via CSS content */
+    .rsvp-label::before { content: 'RSVP'; }
+
+    /*
+      When the checkbox is :checked, the adjacent sibling .feed-card's .rsvp-label
+      changes to a "Going" outline button. The checkbox must be the direct
+      preceding sibling of the .feed-card for this to work, which it is because
+      I put the input right before each card in .feed-grid.
+    */
+    .rsvp-toggle:checked + .feed-card .rsvp-label::before { content: 'Going'; }
+    .rsvp-toggle:checked + .feed-card .rsvp-label {
+      background: transparent;
+      color: var(--cqu-mid);
+      border-color: var(--cqu-mid);
+    }
+
+    /* 
+      --- DYNAMIC CSS-ONLY RSVP COUNT INCREMENT & HOUSE HYPE ---
+      By hiding the default state string and displaying a different one when the 
+      preceding checkbox is :checked, we can build a completely functional, 
+      fully interactive counter increment and custom House social-proof hype!
+    */
+    .going-count-default { display: inline; }
+    .going-count-active { display: none; }
+    .house-hype-msg {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--cqu-light);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .rsvp-toggle:checked + .feed-card .going-count-default { display: none; }
+    .rsvp-toggle:checked + .feed-card .going-count-active { display: inline; }
+
+    /* FEED CARD GRID */
+    /*
+      Note: .feed-grid is display:grid and contains hidden input elements.
+      Those inputs get display:none so they don't mess up the grid columns.
+      The .feed-card items take the normal grid flow.
+    */
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+    }
+
+    .feed-card {
+      background: var(--paper);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(15, 40, 41, 0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feed-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(15, 40, 41, 0.15);
+    }
+
+    /* card top stripe using different shades of CQU green per category */
+    /* Events get the medium-dark teal so they look distinct from announcements */
+    .feed-card[data-cat="event"]    > .card-stripe { background: var(--cqu-teal); height: 6px; }
+    /* Announcements get the darkest forest green */
+    .feed-card[data-cat="announce"] > .card-stripe { background: var(--cqu-forest); height: 6px; }
+
+    .card-stripe { width: 100%; }
+
+    .card-body {
+      padding: 20px 22px 16px;
+    }
+
+    /* small icon + label row above the card title */
+    .card-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      margin: 0 0 6px 0;
+    }
+
+    .card-label svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* events get medium teal, announcements get the darkest green */
+    .feed-card[data-cat="event"]    .card-label { color: var(--cqu-teal); }
+    .feed-card[data-cat="announce"] .card-label { color: var(--cqu-forest); }
+
+    .card-body h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.02rem;
+      color: var(--ink);
+    }
+
+    .card-body p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* card footer for RSVP count plus button, or "Posted by" for announcements */
+    .card-footer {
+      padding: 12px 22px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.87rem;
+      color: var(--muted);
+    }
+
+    /* REPORT ISSUE CTA (separate from duplicate check) */
+    /* This is the standalone "Report New Issue" block, distinct from the
+       warning aside above. Gives Kuni a clear path to file a new issue
+       if she determines her problem is not the duplicate. */
+    .report-cta {
+      max-width: var(--page-max);
+      margin: 0 auto 32px;
+      padding: 0 24px;
+    }
+
+    .report-cta-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      background: var(--cqu-mist);
+      border: 1.5px solid var(--cqu-mist2);
+      border-radius: var(--radius-md);
+      padding: 22px 28px;
+    }
+
+    .report-cta-text-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .report-cta-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--cqu-dark);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .report-cta-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--lime);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .report-cta-inner h3 {
+      margin: 0 0 4px 0;
+      font-size: 1rem;
+      color: var(--cqu-dark);
+    }
+
+    .report-cta-inner p {
+      margin: 0;
+      font-size: 0.87rem;
+      color: var(--cqu-teal);
+    }
+
+    .report-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: var(--cqu-forest);
+      color: var(--lime);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.18s;
+    }
+
+    .report-cta-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .report-cta-btn:hover { background: var(--cqu-dark); }
+
+    /* upvote button styling inside the warning card */
+    .upvote-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .upvote-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* down arrow for the "mine is different" link */
+    .scroll-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .scroll-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+  </style>
 </head>
 
 <body>
@@ -28,21 +421,275 @@
     </nav>
 
     <div class="header-actions">
-      <a href="index.html#account-panel" class="profile-chip"><span>KS</span><strong>Kuni</strong></a>
+      <div class="user-switch-container">
+        <div tabindex="0" class="profile-chip">
+          <span>??</span>
+          <strong>Switch User</strong>
+        </div>
+        <div class="user-dropdown">
+          <a href="index.html"><span>AB</span> <strong>Anshul (Dashboard)</strong></a>
+          <a href="rl-workspace.html"><span>RW</span> <strong>Reece (RL Workspace)</strong></a>
+          <a href="feed.html"><span>KS</span> <strong>Kuni (Resident Feed)</strong></a>
+        </div>
+      </div>
     </div>
   </header>
 
   <main class="page-shell">
-    <section class="stub-page">
-      <p class="eyebrow">Batch 4 page ready</p>
-      <h1>Resident feed placeholder.</h1>
-      <p>This page prevents broken links now. Batch 4 will replace it with event cards, RSVP states and the full issue workflow.</p>
 
-      <div class="button-row centre-row">
-        <a href="issue-report.html" class="button button-primary">Report an issue</a>
-        <a href="index.html" class="button button-secondary dark-text">Back to dashboard</a>
+    <!-- PAGE HERO + SCENARIO EDGE CASE CARD -->
+    <section class="form-hero">
+      <div>
+        <p class="eyebrow">Scenario 3</p>
+        <h1>Resident Feed</h1>
+        <p>Upcoming events, college announcements, and issue reporting.</p>
       </div>
+
+      <!--
+        EDGE CASE 1: Duplicate Issue Interception
+        The scenario brief says Kuni almost files a duplicate maintenance report.
+        This warning card fires before she reaches the report form, so the RL
+        does not get spammed with ten reports about the same leaky shower head.
+        The upvote button lets her add her voice to the existing report instead.
+      -->
+      <aside class="shift-card warning-card" style="background: var(--warning-soft); border-color: var(--warning);">
+        <div class="panel-topline">
+          <span class="status-dot" style="background: var(--warning); box-shadow: 0 0 0 7px rgba(165, 106, 22, 0.25);"></span>
+          <strong style="color: var(--warning);">Duplicate Issue Detected</strong>
+        </div>
+        <h2 style="color: var(--warning);">There is 1 known issue near your room</h2>
+        <p style="color: var(--warning);">
+          There is already an open report for a leaking shower head in House 4.
+          Is that the same issue you wanted to report?
+        </p>
+        <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+          <a href="#" class="button button-primary upvote-btn" style="background: var(--warning); color: #fff; border-color: var(--warning);">
+            <!-- thumbs up icon -->
+            <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Yes, upvote that report
+          </a>
+          <!--
+            "No, mine is different" scrolls down to the standalone
+            Report New Issue CTA below so there is a clear separate path.
+          -->
+          <a href="#report-new-issue" class="button button-secondary scroll-btn" style="border-color: var(--warning); color: var(--warning);">
+            No, mine is different
+            <!-- chevron down icon -->
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--warning);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+        </div>
+      </aside>
     </section>
+
+    <!-- STANDALONE "REPORT NEW ISSUE" CTA -->
+    <!-- Separate from the duplicate check so Kuni has her own clear entry point
+         even if she scrolls past the warning card above. -->
+    <div class="report-cta" id="report-new-issue">
+      <div class="report-cta-inner">
+        <div class="report-cta-text-group">
+          <!-- wrench icon -->
+          <div class="report-cta-icon">
+            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div>
+            <h3>Got a maintenance issue to report?</h3>
+            <p>Submit a new issue directly to your Residential Life team. You can report anonymously or with your name attached.</p>
+          </div>
+        </div>
+        <!-- this is an anchor tag not a button so it actually navigates to the report form -->
+        <a href="issue-report.html" class="report-cta-btn">
+          <!-- alert triangle icon -->
+          <svg viewBox="0 0 24 24"><polygon points="10.29 3.86 1.82 18 22.18 18 13.71 3.86 10.29 3.86"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Report New Issue
+        </a>
+      </div>
+    </div>
+
+    <!-- FEED WRAPPER -->
+    <!-- filter radios MUST be INSIDE here so the tilde sibling selector can reach
+         .feed-filter-bar and .feed-grid since they all share the same parent div.
+         If I put them outside this div the filtering simply does not work. -->
+    <div class="feed-wrapper" style="max-width: var(--page-max); margin: 0 auto; padding: 0 24px 60px;">
+
+      <!--
+        Hidden radio inputs. Clicking a label[for="filter-X"] checks the matching
+        input, which triggers the :checked CSS rules. They must come before
+        .feed-filter-bar and .feed-grid in the DOM.
+      -->
+      <input type="radio" name="feed-filter" id="filter-all"      class="feed-filter-radio" checked>
+      <input type="radio" name="feed-filter" id="filter-events"   class="feed-filter-radio">
+      <input type="radio" name="feed-filter" id="filter-announce" class="feed-filter-radio">
+
+      <!-- clickable pill labels, each targeting one of the hidden radio inputs above -->
+      <div class="feed-filter-bar">
+
+        <label for="filter-all">
+          <!-- list / all icon -->
+          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          All
+        </label>
+
+        <label for="filter-events">
+          <!-- calendar icon -->
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Events
+        </label>
+
+        <label for="filter-announce">
+          <!-- bell icon -->
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Announcements
+        </label>
+
+      </div>
+
+      <!--
+        FEED GRID
+        Each RSVP event card has a hidden checkbox directly before it in the DOM.
+        Using the adjacent sibling selector + not the general sibling tilde,
+        so only that specific card gets toggled. Clicking the label inside the
+        card checks or unchecks the box, which swaps the button text via CSS.
+
+        display:none inputs do not participate in the CSS grid layout so the
+        three column grid looks clean with no invisible gaps.
+      -->
+      <div class="feed-grid">
+
+        <!-- EVENT 1: Movie Mill -->
+        <!-- checkbox sits directly before its card so + selector works -->
+        <input type="checkbox" id="rsvp-movie" class="rsvp-toggle">
+        <div class="feed-card" data-cat="event">
+          <div class="card-stripe"></div>
+          <div class="card-body">
+            <!-- calendar icon in the label -->
+            <p class="card-label">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Tonight at 7:30 PM
+            </p>
+            <h3>Movie Mill Night</h3>
+            <p>Screening of Interstellar at the Movie Mill. Free popcorn is available on a first come first served basis.</p>
+          </div>
+          <div class="card-footer">
+            <div>
+              <span class="going-count-default"><strong>18 going</strong></span>
+              <span class="going-count-active"><strong>19 going</strong> <small style="color: var(--cqu-light); font-weight: bold;">(You are going!)</small></span>
+              <span class="house-hype-msg">4 from your house are going</span>
+            </div>
+            <!-- label targets the checkbox above so clicking it toggles the state -->
+            <label for="rsvp-movie" class="rsvp-label">
+              <!-- check circle icon shows when RSVP is active -->
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </label>
+          </div>
+        </div>
+
+        <!-- EVENT 2: Welcome BBQ (pre-RSVPed on load) -->
+        <!--
+          This card starts with the checkbox already checked via the HTML checked
+          attribute. This simulates Kuni having RSVPed previously so the button
+          shows Going on page load without any JavaScript at all.
+        -->
+        <input type="checkbox" id="rsvp-bbq" class="rsvp-toggle" checked>
+        <div class="feed-card" data-cat="event">
+          <div class="card-stripe"></div>
+          <div class="card-body">
+            <p class="card-label">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Tomorrow at 6:00 PM
+            </p>
+            <h3>Welcome BBQ</h3>
+            <p>Free snags and drinks behind the Dining Hall. Come say hello to all the new term students.</p>
+          </div>
+          <div class="card-footer">
+            <div>
+              <span class="going-count-default"><strong>41 going</strong></span>
+              <span class="going-count-active"><strong>42 going</strong> <small style="color: var(--cqu-light); font-weight: bold;">(You are going!)</small></span>
+              <span class="house-hype-msg">12 from your house are going</span>
+            </div>
+            <!-- since rsvp-bbq is pre-checked, this label renders in Going state -->
+            <label for="rsvp-bbq" class="rsvp-label">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </label>
+          </div>
+        </div>
+
+        <!-- EVENT 3: Study Hall Social -->
+        <input type="checkbox" id="rsvp-study" class="rsvp-toggle">
+        <div class="feed-card" data-cat="event">
+          <div class="card-stripe"></div>
+          <div class="card-body">
+            <p class="card-label">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Saturday 7 June at 2:00 PM
+            </p>
+            <h3>Study Hall Social</h3>
+            <p>A low-key study session with snacks in the Common Room. Bring your laptop and your notes.</p>
+          </div>
+          <div class="card-footer">
+            <div>
+              <span class="going-count-default"><strong>9 going</strong></span>
+              <span class="going-count-active"><strong>10 going</strong> <small style="color: var(--cqu-light); font-weight: bold;">(You are going!)</small></span>
+              <span class="house-hype-msg">2 from your house are going</span>
+            </div>
+            <label for="rsvp-study" class="rsvp-label">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </label>
+          </div>
+        </div>
+
+        <!-- ANNOUNCEMENT 1: Dining Hall -->
+        <!-- announcements don't need RSVP checkboxes -->
+        <div class="feed-card" data-cat="announce">
+          <div class="card-stripe"></div>
+          <div class="card-body">
+            <p class="card-label">
+              <!-- bell icon for announcements -->
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Announcement
+            </p>
+            <h3>Dining Hall Closure</h3>
+            <p>The Dining Hall will be closed this Sunday from 2 PM to 4 PM for deep cleaning. Please plan your meals for that window.</p>
+          </div>
+          <div class="card-footer">
+            <small>Posted by College Management</small>
+          </div>
+        </div>
+
+        <!-- ANNOUNCEMENT 2: Quiet Hours -->
+        <div class="feed-card" data-cat="announce">
+          <div class="card-stripe"></div>
+          <div class="card-body">
+            <p class="card-label">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Announcement
+            </p>
+            <h3>Quiet Hours Reminder</h3>
+            <p>Quiet hours apply from Sunday through Thursday, 10 PM to 7 AM. Repeated breaches will be referred to the RL on duty.</p>
+          </div>
+          <div class="card-footer">
+            <small>Posted by Residential Life</small>
+          </div>
+        </div>
+
+        <!-- ANNOUNCEMENT 3: Laundry -->
+        <div class="feed-card" data-cat="announce">
+          <div class="card-stripe"></div>
+          <div class="card-body">
+            <p class="card-label">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Announcement
+            </p>
+            <h3>Laundry Room Notice</h3>
+            <p>Dryer 2 in the Building A laundry room is out of service until Thursday. Please use the Building B laundry in the meantime.</p>
+          </div>
+          <div class="card-footer">
+            <small>Posted by Facilities</small>
+          </div>
+        </div>
+
+      </div><!-- end feed-grid -->
+    </div><!-- end feed-wrapper -->
+
   </main>
 </body>
 </html>
